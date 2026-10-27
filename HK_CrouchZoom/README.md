@@ -1,4 +1,4 @@
-# HK Crouch Eye Zoom v2 — experimental
+# HK Crouch Eye Zoom v3 — experimental
 
 Preserves held normal eye zoom during standing/crouched movement, including
 shoulder aim. The first candidate excluded raised-weapon input and required an
@@ -12,7 +12,12 @@ movement. It preserves the FOV between named vanilla third-person standing/
 crouching cameras and their raised variants. It does not change animation graphs,
 camera position, or the existing CameraHandler override in StormZz_Zoom.
 Custom camera subclasses are not covered by the FOV activation patch.
-The actual cause of the user's zoom pop and effectiveness of V2 are unverified.
+V1 and V2 did not solve the reported issue. V3 additionally sets the camera's
+output FOV to the configured normal eye-zoom target every eligible frame while
+held, and carries the previous standing/crouch camera boom distance through
+transitions. This changes entry easing and usual boom-distance differences while
+zoom is held. See LWP_TEST.md for full test instructions and bounded diagnostics.
+The effectiveness of V3 remains unverified in-game.
 
 ## Install and test
 

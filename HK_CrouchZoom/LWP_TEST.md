@@ -1,11 +1,16 @@
-# Movement PBO with crouch eye-zoom patch v2 — experimental
+# Movement PBO with crouch eye-zoom patch v3 — experimental
 
-V1 excluded raised-weapon input. The reported clip shows a shoulder-held rifle,
-so V2 permits held eye zoom during shoulder aim as well. It does not require
-zoom to have been active on a preceding frame. This deliberately permits eye
-zoom while raised, where vanilla normally clears it. Sights/scopes, active
-fighting, prone, vehicles and standing sprint keep inherited behavior. This
-revision is unverified in-game.
+V1 and V2 did not resolve the reported zoom change. V3 directly applies the
+configured normal eye-zoom FOV in eligible third-person camera updates while
+zoom is held. It also preserves the camera boom distance from the preceding
+standing/crouch camera. This tests both FOV loss and the native switch from a
+raised rifle camera (0.8 m) to a lowered crouch camera (1.4 m). That switch is a
+concrete source-level difference, not yet a confirmed runtime diagnosis.
+
+V3 intentionally applies full eye zoom immediately while held, without the
+normal entry easing. It also keeps the standing/crouch boom distance constant
+until zoom is released. Vertical stance offsets and collision handling are not
+replaced. This can change the usual third-person framing during held zoom.
 
 The addons/lwp_movement.pbo in this ZIP is based on the uploaded movement PBO.
 All four existing entries are unchanged, including its config, movement script,
@@ -29,15 +34,18 @@ fists, prone, sprinting, vehicles and item actions for regressions. This patch
 preserves an existing eye zoom; it does not force weapon ADS or modify animation
 graphs. It does not fix the unresolved fists-up animation itself.
 
-The patch restores normal eye zoom while requested if the default view handler
-clears it during standing/crouched movement, including raised stances. It carries
-previous FOV between named vanilla third-person standing/crouching cameras and
-their raised variants. Custom camera classes and the existing StormZz camera
-selection override require testing. The client script log prints
-`[HKCROUCHZOOM] version=2 loaded` and, when restoring zoom,
-`[HKCROUCHZOOM] version=2 preserving held eye zoom`. These show execution, not
-visual success. If the view still pulls back while these messages appear, send
-the matching script log/RPT so camera position/blending can be investigated.
+The player-level logic retains held eye zoom, including shoulder aim. The new
+camera-level enforcement applies only to the named vanilla third-person standing/
+crouching cameras and their raised variants. First-person still uses the prior
+player-level patch. Actual ADS/scopes, melee, standing sprint, prone and vehicles
+are excluded. Custom camera classes are not covered.
+
+The client script log prints `[HKCROUCHZOOM] version=3 loaded`. Camera-level
+samples include camera name, eye level, FOV, applied distance and native distance
+while zoom is held (limited to 40 samples per camera instance, 0.25 s apart).
+If the zoom still changes, send that session's script log/RPT; the values show
+whether this exact patch is executing and what it outputs. They do not prove
+what collision or final native blending renders.
 
 Archive contents and checksums were verified. There is no DayZ compiler/runtime
 here: compilation and the actual zoom fix are UNVERIFIED. If the game reports a

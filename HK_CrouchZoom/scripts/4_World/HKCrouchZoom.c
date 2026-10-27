@@ -13,7 +13,7 @@ modded class DayZPlayerImplement
             return;
         if (!m_HKCrouchZoomAnnounced)
         {
-            Print("[HKCROUCHZOOM] version=2 loaded");
+            Print("[HKCROUCHZOOM] version=3 loaded");
             m_HKCrouchZoomAnnounced = true;
         }
 
@@ -26,7 +26,7 @@ modded class DayZPlayerImplement
         if (m_CameraEyeZoomLevel == ECameraZoomType.NONE)
         {
             if (!m_HKCrouchZoomHolding)
-                Print("[HKCROUCHZOOM] version=2 preserving held eye zoom");
+                Print("[HKCROUCHZOOM] version=3 preserving held eye zoom");
             m_CameraEyeZoomLevel = ECameraZoomType.NORMAL;
         }
         m_HKCrouchZoomHolding = true;
@@ -61,6 +61,47 @@ modded class DayZPlayerImplement
 
 modded class DayZPlayerCamera3rdPerson
 {
+    private float m_HKCrouchZoomLockedDistance = -1;
+    private float m_HKCrouchZoomLogElapsed;
+    private int m_HKCrouchZoomLogSamples;
+
+    override void StdFovUpdate(float pDt, out DayZPlayerCameraResult pOutResult)
+    {
+        super.StdFovUpdate(pDt, pOutResult);
+
+        if (!m_pPlayer || !m_pInput)
+            return;
+        string cameraName = ClassName();
+        bool eligibleCamera = HKCrouchZoomIsCrouchCamera(cameraName) || HKCrouchZoomIsStandingCamera(cameraName);
+        PlayerBase player = PlayerBase.Cast(m_pPlayer);
+        if (!eligibleCamera || !m_pInput.IsZoomToggle() || m_pInput.WeaponADS() || m_pPlayer.GetCurrentCommandID() != DayZPlayerConstants.COMMANDID_MOVE || !player || !player.IsAlive() || player.IsFighting())
+        {
+            m_HKCrouchZoomLockedDistance = -1;
+            return;
+        }
+
+        // Hold FOV at the configured eye-zoom target even if Raised briefly
+        // clears the player zoom flag. Native stance-camera blending can also
+        // move the boom from 0.8 m (rifle raised) to 1.4 m (lowered crouch).
+        if (m_HKCrouchZoomLockedDistance < 0)
+            m_HKCrouchZoomLockedDistance = pOutResult.m_fDistance;
+        m_fFovAbsolute = GetDayZGame().GetFOVByZoomType(ECameraZoomType.NORMAL);
+        m_fFovAbsVel[0] = 0;
+        pOutResult.m_fFovAbsolute = m_fFovAbsolute;
+        pOutResult.m_fFovMultiplier = 1.0;
+        pOutResult.m_fDistance = m_HKCrouchZoomLockedDistance;
+        pOutResult.m_bUpdateWhenBlendOut = true;
+
+        // Bounded camera-level evidence if the visual pullback persists.
+        m_HKCrouchZoomLogElapsed += pDt;
+        if (m_HKCrouchZoomLogElapsed >= 0.25 && m_HKCrouchZoomLogSamples < 40)
+        {
+            m_HKCrouchZoomLogElapsed = 0;
+            m_HKCrouchZoomLogSamples++;
+            Print("[HKCROUCHZOOM] version=3 camera=" + cameraName + " eye=" + m_pPlayer.GetEyeZoomLevel().ToString() + " fov=" + pOutResult.m_fFovAbsolute.ToString() + " distance=" + pOutResult.m_fDistance.ToString() + " native_distance=" + m_fDistance.ToString());
+        }
+    }
+
     override void OnActivate(DayZPlayerCamera pPrevCamera, DayZPlayerCameraResult pPrevCameraResult)
     {
         super.OnActivate(pPrevCamera, pPrevCameraResult);
@@ -82,6 +123,9 @@ modded class DayZPlayerCamera3rdPerson
         bool newStanding = HKCrouchZoomIsStandingCamera(newCamera);
         if (!((oldStanding || oldCrouch) && (newStanding || newCrouch)))
             return;
+
+        if (pPrevCameraResult.m_fDistance > 0)
+            m_HKCrouchZoomLockedDistance = pPrevCameraResult.m_fDistance;
 
         if (pPrevCameraResult.m_fFovAbsolute > 0)
         {
