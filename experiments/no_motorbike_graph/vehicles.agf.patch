@@ -1,0 +1,64 @@
+--- original/vehicles.agf
++++ no_motorbike/vehicles.agf
+@@ -1426,7 +1426,7 @@
+      BlendFn S
+      TriggerOn ""
+      TriggerOff ""
+-     Condition "VehicleType == 10 || VehicleType == 11"
++     Condition "false"
+      Child0 "VehicleQ"
+      Child1 "AnimNodeIK2hands_1"
+      OptimizeMin 1
+@@ -1471,7 +1471,7 @@
+      BlendFn "Ease In"
+      TriggerOn ""
+      TriggerOff ""
+-     Condition "(VehicleType == 10 || VehicleType == 11)"
++     Condition "false"
+      Child0 "VehicleAccelerationB"
+      Child1 "WobbleBlend"
+      OptimizeMin 1
+@@ -1526,7 +1526,7 @@
+      BlendFn S
+      TriggerOn ""
+      TriggerOff ""
+-     Condition "VehicleType == 10 || VehicleType == 11"
++     Condition "false"
+      Child0 "MotoInertiaB"
+      Child1 "MotoYInertia_0"
+      OptimizeMin 0
+@@ -1567,7 +1567,7 @@
+      BlendFn S
+      TriggerOn ""
+      TriggerOff ""
+-     Condition "VehicleType == 10 || VehicleType == 11"
++     Condition "false"
+      Child0 "VehicleSTM"
+      Child1 "MotorBikeSTM"
+      OptimizeMin 1
+@@ -2803,7 +2803,7 @@
+      BlendFn S
+      TriggerOn ""
+      TriggerOff ""
+-     Condition "(VehicleType == 10 || VehicleType == 11)"
++     Condition "false"
+      Child0 "VehicleAccelerationDir"
+      Child1 "AnimNodeBlendN"
+      OptimizeMin 1
+@@ -2989,14 +2989,14 @@
+       AnimSrcNodeState Jawa_05 {
+        EditorPos 25 -52.8
+        Child "Jawa_05G"
+-       StartCondition "VehicleType == 10"
++       StartCondition "false"
+        TimeStorage Inherit
+        IsExit 1
+       }
+       AnimSrcNodeState Jawa_Bitrak {
+        EditorPos 27.6 -52.8
+        Child "Jawa_BitrakG"
+-       StartCondition "VehicleType == 11"
++       StartCondition "false"
+        TimeStorage Inherit
+        IsExit 1
+       }
