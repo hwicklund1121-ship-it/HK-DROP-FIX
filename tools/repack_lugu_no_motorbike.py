@@ -80,6 +80,21 @@ def decompress(data, size):
     return bytes(output)
 
 
+def compress_literals(data):
+    """Encode valid PBO Cprs/LZSS with literal groups and its payload checksum.
+
+    Luigi's existing AGF uses this same all-literal encoding. Keeping the
+    resource compressed avoids changing the entry method while repacking.
+    """
+    encoded = bytearray()
+    for position in range(0, len(data), 8):
+        group = data[position:position + 8]
+        encoded.append((1 << len(group)) - 1)
+        encoded.extend(group)
+    encoded.extend(struct.pack("<I", sum(data) & 0xFFFFFFFF))
+    return bytes(encoded)
+
+
 def build(repository, destination):
     original = (repository / "LUGUINSTADROPFIX.pbo").read_bytes()
     properties, entries = read_pbo(original)
@@ -104,9 +119,14 @@ def build(repository, destination):
         raise ValueError("Missing experimental disabled selectors")
     if any(entry[0].lower() == vehicle_name.lower() for entry in entries):
         raise ValueError("Experimental entry already exists")
-    replacement = (graph_name, (0, len(patched_graph), 0, 0, len(patched_graph)), patched_graph)
+    encoded_graph = compress_literals(patched_graph)
+    encoded_vehicle = compress_literals(vehicle_graph)
+    assert decompress(encoded_graph, len(patched_graph)) == patched_graph
+    assert decompress(encoded_vehicle, len(vehicle_graph)) == vehicle_graph
+    # Preserve the original compression method, reserved value and timestamp.
+    replacement = (graph_name, (fields[0], len(patched_graph), fields[2], fields[3], len(encoded_graph)), encoded_graph)
     patched = [replacement if entry[0] == graph_name else entry for entry in entries]
-    patched.append((vehicle_name, (0, len(vehicle_graph), 0, 0, len(vehicle_graph)), vehicle_graph))
+    patched.append((vehicle_name, (0x43707273, len(vehicle_graph), 0, fields[3], len(encoded_vehicle)), encoded_vehicle))
     headers = properties
     payload = bytearray()
     for name, metadata, content in patched:
@@ -119,10 +139,15 @@ def build(repository, destination):
     assert len(actual) == len(entries) + 1
     for before, after in zip(entries, actual):
         assert after == (replacement if before[0] == graph_name else before)
-    assert actual[-1][0] == vehicle_name and actual[-1][2] == vehicle_graph
+    assert actual[-1][0] == vehicle_name
+    assert decompress(actual[-1][2], actual[-1][1][1]) == vehicle_graph
+    loaded_graph = next(entry for entry in actual if entry[0] == graph_name)
+    assert loaded_graph[1][0] == fields[0]
+    assert loaded_graph[1][2:4] == fields[2:4]
+    assert decompress(loaded_graph[2], loaded_graph[1][1]) == patched_graph
     assert old not in patched_graph and vehicle_resource in patched_graph
     destination.mkdir(parents=True, exist_ok=True)
-    archive = destination / "HK_LUGU_NoMotorbike-TEST.zip"
+    archive = destination / "HK_LUGU_NoMotorbike-TEST-v2.zip"
     readme = (repository / "experiments/no_motorbike_graph/PBO_TEST.md").read_bytes()
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zipped:
         zipped.writestr("@LUGU_NoMotorbike_TEST/addons/LUGUINSTADROPFIX.pbo", result)

@@ -1,4 +1,16 @@
-# Luigi motorcycle-branch isolation PBO — experimental
+# Luigi motorcycle-branch isolation PBO v2 — experimental
+
+The first test build crashed in the user's DayZ 1.30 session. The RPT reported
+that the main Luigi AGR failed to open immediately before character creation
+crashed. The uploaded installed PBO exactly matched that first build. Do not
+use HK_LUGU_NoMotorbike-TEST.zip (v1).
+
+V2 preserves the original AGR compression method, reserved field and timestamp,
+and adds the local AGF in the same Cprs/LZSS format as the original local AGF.
+The first build changed the AGR to an uncompressed entry. This corrects that
+packaging difference; it is not a confirmed diagnosis or an in-game crash fix.
+The graph experiment itself is unchanged. If V2 fails to load, roll back rather
+than continuing the crouch test and send the new RPT.
 
 This ZIP contains a repacked LUGUINSTADROPFIX.pbo. Its existing text AGR now
 references a new local copy of Vehicles.agf with seven motorcycle selectors set
