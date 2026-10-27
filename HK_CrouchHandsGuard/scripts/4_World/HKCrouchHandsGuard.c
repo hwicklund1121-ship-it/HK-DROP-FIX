@@ -7,10 +7,10 @@ modded class PlayerBase
     private bool m_HKCrouchHandsCrouchTransition;
     private bool m_HKCrouchHandsWasBlocking;
 
-    override bool ModCommandHandlerBefore(float dt, int commandID, bool commandFinished)
+    override bool ModCommandHandlerBefore(float pDt, int pCurrentCommandID, bool pCurrentCommandFinished)
     {
         // Respect a preceding mod's request to handle this tick itself.
-        bool handled = super.ModCommandHandlerBefore(dt, commandID, commandFinished);
+        bool handled = super.ModCommandHandlerBefore(pDt, pCurrentCommandID, pCurrentCommandFinished);
         if (handled)
             return handled;
 
@@ -18,7 +18,7 @@ modded class PlayerBase
             return handled;
 
         HumanCommandMove move = GetCommand_Move();
-        if (commandID != DayZPlayerConstants.COMMANDID_MOVE || !move || commandFinished)
+        if (pCurrentCommandID != DayZPlayerConstants.COMMANDID_MOVE || !move || pCurrentCommandFinished)
         {
             m_HKCrouchHandsPreviousStance = -1;
             m_HKCrouchHandsWasChanging = false;
