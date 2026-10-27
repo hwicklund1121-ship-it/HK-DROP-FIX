@@ -1,5 +1,10 @@
 # Experimental downloads
 
+**The user reported that `StormZz_Zoom-StableCamera-TEST.zip` broke the desired
+FOV-revert behavior. Do not use that build.**
+`HK_RestoreOriginal-ZoomAndMovement.zip` contains the byte-identical original
+uploaded zoom and movement PBOs for rollback. It does not fix the camera issue.
+
 **Do not use `HK_LUGU_NoMotorbike-TEST.zip` (v1).** A reported DayZ 1.30 crash
 showed that its main player AGR failed to open. It remains in history for
 comparison, not as a recommended download.
