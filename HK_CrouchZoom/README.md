@@ -1,19 +1,18 @@
-# HK Crouch Eye Zoom — experimental
+# HK Crouch Eye Zoom v2 — experimental
 
-Preserves an already-active normal eye zoom while the zoom input remains held
-during crouch/stand changes. This addresses two possible sources of a zoom pop:
-the stock HandleView clearing eye zoom when the movement state becomes Raised,
-and a third-person standing/crouching camera initializing its FOV on activation.
-Neither mechanism has been confirmed as the cause on the user's machine.
+Preserves held normal eye zoom during standing/crouched movement, including
+shoulder aim. The first candidate excluded raised-weapon input and required an
+already-active eye zoom. V2 removes those restrictions while keeping ironsights,
+scopes, fighting, prone, vehicles and standing sprint on inherited behavior.
+The stock HandleView normally clears eye zoom for Raised movement states.
 
-The patch calls the inherited HandleView and OnActivate methods. It does not
-replace CameraHandler, change global FOV, request a stance, or edit animation
-graphs. It restores an existing zoom only when vanilla clears it while crouched
-or during a detected transition from crouch to standing, and the input
-does not request raised hands or ADS. It does not force zoom on from idle.
-Intentional weapon raising and sights/scopes retain vanilla behavior. Camera FOV
-continuity is limited to the named vanilla third-person crouch/standing cameras.
-Custom camera subclasses are not covered by that part of the patch.
+The patch calls inherited HandleView and OnActivate methods. It restores normal
+eye zoom when still requested if the inherited handler clears it in eligible
+movement. It preserves the FOV between named vanilla third-person standing/
+crouching cameras and their raised variants. It does not change animation graphs,
+camera position, or the existing CameraHandler override in StormZz_Zoom.
+Custom camera subclasses are not covered by the FOV activation patch.
+The actual cause of the user's zoom pop and effectiveness of V2 are unverified.
 
 ## Install and test
 
@@ -25,7 +24,7 @@ pose investigation, which remains unresolved.
 
 Hold normal eye zoom (middle mouse by default), repeatedly crouch and stand,
 stationary and moving, and check for zoom loss. Repeat in first and third person,
-empty-handed and with a lowered weapon. Release zoom halfway through a transition
+empty-handed and with lowered/shoulder-held weapons. Release zoom halfway through a transition
 and confirm it releases normally. Check starting zoom while already crouched,
 intentional raised fists, ironsights/scopes, sprinting, prone, vehicles and death.
 Compare with this addon unloaded. If the issue persists, send a clip plus the

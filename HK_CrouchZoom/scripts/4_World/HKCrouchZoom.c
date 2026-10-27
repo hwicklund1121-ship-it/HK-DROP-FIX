@@ -1,54 +1,61 @@
-// Preserve a held eye zoom across crouch transitions, not weapon ADS.
+// Held eye zoom for standing/crouched movement, including shoulder aim.
+// Weapon ironsights and scopes keep their own camera/FOV behavior.
 modded class DayZPlayerImplement
 {
-    private int m_HKCrouchZoomPreviousStance = -1;
-    private bool m_HKCrouchZoomLeavingCrouch;
+    private bool m_HKCrouchZoomAnnounced;
+    private bool m_HKCrouchZoomHolding;
 
     override void HandleView()
     {
-        ECameraZoomType previousZoom = m_CameraEyeZoomLevel;
         super.HandleView();
 
         if (GetGame().IsDedicatedServer() || GetGame().GetPlayer() != this)
             return;
-
-        int previousStance = m_HKCrouchZoomPreviousStance;
-        m_HKCrouchZoomPreviousStance = m_MovementState.m_iStanceIdx;
-
-        if (!IsAlive() || GetCurrentCommandID() != DayZPlayerConstants.COMMANDID_MOVE)
+        if (!m_HKCrouchZoomAnnounced)
         {
-            m_HKCrouchZoomPreviousStance = -1;
-            m_HKCrouchZoomLeavingCrouch = false;
+            Print("[HKCROUCHZOOM] version=2 loaded");
+            m_HKCrouchZoomAnnounced = true;
+        }
+
+        if (!HKCrouchZoomCanKeepEyeZoom())
+        {
+            m_HKCrouchZoomHolding = false;
             return;
         }
 
-        HumanCommandMove move = GetCommand_Move();
-        if (!move)
+        if (m_CameraEyeZoomLevel == ECameraZoomType.NONE)
         {
-            m_HKCrouchZoomLeavingCrouch = false;
-            return;
+            if (!m_HKCrouchZoomHolding)
+                Print("[HKCROUCHZOOM] version=2 preserving held eye zoom");
+            m_CameraEyeZoomLevel = ECameraZoomType.NORMAL;
         }
-        int stance = m_HKCrouchZoomPreviousStance;
-        bool crouched = stance == DayZPlayerConstants.STANCEIDX_CROUCH || stance == DayZPlayerConstants.STANCEIDX_RAISEDCROUCH;
-        bool wasCrouched = previousStance == DayZPlayerConstants.STANCEIDX_CROUCH || previousStance == DayZPlayerConstants.STANCEIDX_RAISEDCROUCH;
-        bool standing = stance == DayZPlayerConstants.STANCEIDX_ERECT || stance == DayZPlayerConstants.STANCEIDX_RAISEDERECT;
-        if (!standing || !move.IsChangingStance())
-            m_HKCrouchZoomLeavingCrouch = false;
-        else if (wasCrouched)
-            m_HKCrouchZoomLeavingCrouch = true;
+        m_HKCrouchZoomHolding = true;
+    }
+
+    private bool HKCrouchZoomCanKeepEyeZoom()
+    {
+        if (!IsAlive() || GetCurrentCommandID() != DayZPlayerConstants.COMMANDID_MOVE || !GetCommand_Move())
+            return false;
 
         HumanInputController input = GetInputController();
         if (!input || !input.IsZoomToggle())
-            return;
+            return false;
+        if (input.WeaponADS() || m_CameraOptics || m_CameraIronsight || IsFighting())
+            return false;
 
-        // A deliberate raise/ADS request retains vanilla camera behavior.
-        if (input.IsWeaponRaised() || input.WeaponADS() || m_CameraOptics || m_CameraIronsight)
-            return;
-        if (previousZoom == ECameraZoomType.NONE || m_CameraEyeZoomLevel != ECameraZoomType.NONE)
-            return;
+        int stance = m_MovementState.m_iStanceIdx;
+        bool crouched = stance == DayZPlayerConstants.STANCEIDX_CROUCH || stance == DayZPlayerConstants.STANCEIDX_RAISEDCROUCH;
+        bool standing = stance == DayZPlayerConstants.STANCEIDX_ERECT || stance == DayZPlayerConstants.STANCEIDX_RAISEDERECT;
+        if (!crouched && !standing)
+            return false;
 
-        if (crouched || m_HKCrouchZoomLeavingCrouch)
-            m_CameraEyeZoomLevel = previousZoom;
+        float speed;
+        vector direction;
+        input.GetMovement(speed, direction);
+        // Leave standing sprint zoom restrictions to the inherited handler.
+        if (standing && speed >= 3)
+            return false;
+        return true;
     }
 };
 
@@ -60,7 +67,7 @@ modded class DayZPlayerCamera3rdPerson
 
         if (!pPrevCamera || !pPrevCameraResult || !m_pInput || !m_pPlayer)
             return;
-        if (!m_pInput.IsZoomToggle() || m_pInput.IsWeaponRaised() || m_pInput.WeaponADS())
+        if (!m_pInput.IsZoomToggle() || m_pInput.WeaponADS())
             return;
         if (m_pPlayer.GetCurrentCommandID() != DayZPlayerConstants.COMMANDID_MOVE)
             return;
@@ -73,7 +80,7 @@ modded class DayZPlayerCamera3rdPerson
         bool newCrouch = HKCrouchZoomIsCrouchCamera(newCamera);
         bool oldStanding = HKCrouchZoomIsStandingCamera(oldCamera);
         bool newStanding = HKCrouchZoomIsStandingCamera(newCamera);
-        if (!((oldStanding && newCrouch) || (oldCrouch && newStanding)))
+        if (!((oldStanding || oldCrouch) && (newStanding || newCrouch)))
             return;
 
         if (pPrevCameraResult.m_fFovAbsolute > 0)

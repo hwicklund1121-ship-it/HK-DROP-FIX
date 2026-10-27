@@ -34,7 +34,7 @@ def build(repository, output):
     assert actual[-1][0] == name
     assert decompress(actual[-1][2], actual[-1][1][1]) == source
     output.mkdir(parents=True, exist_ok=True)
-    archive = output / "lwp_movement-CrouchZoom-TEST.zip"
+    archive = output / "lwp_movement-CrouchZoom-TEST-v2.zip"
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zipped:
         zipped.writestr("addons/lwp_movement.pbo", result)
         zipped.write(repository / "HK_CrouchZoom/LWP_TEST.md", "README.md")
