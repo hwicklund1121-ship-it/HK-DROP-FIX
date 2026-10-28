@@ -1,192 +1,17 @@
-// Original GRZ panel embedded in the native Settings > Game tab.
+// Reuse DayZ's shipped settings rows and OptionSelectorSlider. Only preference
+// handling and label text are GRZ code; no custom font/color/slider drawing.
 class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
 {
-    private Widget m_Root;
     private OptionsMenu m_Menu;
+    private ref OptionSelectorSlider m_Fov;
+    private ref OptionSelectorSlider m_View;
+    private ref OptionSelectorSlider m_Objects;
     private float m_SavedFov;
     private float m_SavedView;
     private float m_SavedObjects;
-    private Widget m_FovFill;
-    private Widget m_ViewFill;
-    private Widget m_ObjectsFill;
-    private Widget m_FovMarker;
-    private Widget m_ViewMarker;
-    private Widget m_ObjectsMarker;
-    private SliderWidget m_Fov;
-    private SliderWidget m_View;
-    private SliderWidget m_Objects;
-    private TextWidget m_FovValue;
-    private TextWidget m_ViewValue;
-    private TextWidget m_ObjectsValue;
-    private TextWidget m_Status;
+    private bool m_Ready;
 
-    void GRZCameraSettingsPanel(Widget parent, OptionsMenu menu)
-    {
-        m_Root = GetGame().GetWorkspace().CreateWidgets("GRZ_Movement/gui/layouts/grz_camera.layout", parent);
-        m_Fov = SliderWidget.Cast(m_Root.FindAnyWidget("GRZFov"));
-        m_View = SliderWidget.Cast(m_Root.FindAnyWidget("GRZView"));
-        m_Objects = SliderWidget.Cast(m_Root.FindAnyWidget("GRZObjects"));
-        m_FovValue = TextWidget.Cast(m_Root.FindAnyWidget("GRZFovValue"));
-        m_ViewValue = TextWidget.Cast(m_Root.FindAnyWidget("GRZViewValue"));
-        m_ObjectsValue = TextWidget.Cast(m_Root.FindAnyWidget("GRZObjectsValue"));
-        m_Status = TextWidget.Cast(m_Root.FindAnyWidget("GRZStatus"));
-        m_FovFill = m_Root.FindAnyWidget("GRZFovFill");
-        m_ViewFill = m_Root.FindAnyWidget("GRZViewFill");
-        m_ObjectsFill = m_Root.FindAnyWidget("GRZObjectsFill");
-        m_FovFill.SetFlags(WidgetFlags.IGNOREPOINTER);
-        m_ViewFill.SetFlags(WidgetFlags.IGNOREPOINTER);
-        m_ObjectsFill.SetFlags(WidgetFlags.IGNOREPOINTER);
-        m_FovValue.SetOutline(1, ARGB(255, 0, 0, 0));
-        m_ViewValue.SetOutline(1, ARGB(255, 0, 0, 0));
-        m_ObjectsValue.SetOutline(1, ARGB(255, 0, 0, 0));
-        m_FovMarker = m_Root.FindAnyWidget("GRZFovMarker");
-        m_ViewMarker = m_Root.FindAnyWidget("GRZViewMarker");
-        m_ObjectsMarker = m_Root.FindAnyWidget("GRZObjectsMarker");
-        m_FovMarker.SetFlags(WidgetFlags.IGNOREPOINTER);
-        m_ViewMarker.SetFlags(WidgetFlags.IGNOREPOINTER);
-        m_ObjectsMarker.SetFlags(WidgetFlags.IGNOREPOINTER);
-        m_Fov.SetMinMax(0.9, 2.0);
-        m_Fov.SetStep(0.001);
-        m_View.SetMinMax(500, 5000);
-        m_View.SetStep(50);
-        m_Objects.SetMinMax(500, 5000);
-        m_Objects.SetStep(50);
-        GRZCameraPreferences saved = GRZCameraPreferences.Current();
-        m_Fov.SetCurrent(Math.Clamp(GetDayZGame().GetUserFOV(), 0.9, 2.0));
-        m_View.SetCurrent(saved.ViewDistance);
-        m_Objects.SetCurrent(saved.ObjectDistance);
-        RefreshValues();
-        TextWidget heading = TextWidget.Cast(m_Root.FindAnyWidget("GRZSectionTitle"));
-        heading.SetFlags(WidgetFlags.CENTER | WidgetFlags.VCENTER);
-        heading.SetTextProportion(0.8);
-        m_Root.SetHandler(this);
-        m_Menu = menu;
-        CaptureSavedValues();
-    }
-
-    private void RefreshValues()
-    {
-        // Objects cannot render farther than the overall view distance.
-        if (m_Objects.GetCurrent() > m_View.GetCurrent())
-            m_Objects.SetCurrent(m_View.GetCurrent());
-        UpdateMarker(m_Fov, m_FovMarker, m_FovFill);
-        UpdateMarker(m_View, m_ViewMarker, m_ViewFill);
-        UpdateMarker(m_Objects, m_ObjectsMarker, m_ObjectsFill);
-        m_FovValue.SetText(m_Fov.GetCurrent().ToString());
-        m_ViewValue.SetText(Math.Round(m_View.GetCurrent()).ToString() + " m");
-        m_ObjectsValue.SetText(Math.Round(m_Objects.GetCurrent()).ToString() + " m");
-    }
-
-    private void UpdateMarker(SliderWidget slider, Widget marker, Widget fill)
-    {
-        float fraction = (slider.GetCurrent() - slider.GetMin()) / (slider.GetMax() - slider.GetMin());
-        fraction = Math.Clamp(fraction, 0, 1);
-        marker.SetPos(fraction * 0.988, 0.10);
-        fill.SetSize(fraction, 1.0);
-    }
-
-    private void MatchText(TextWidget source, TextWidget destination)
-    {
-        if (!source || !destination)
-            return;
-        destination.SetBold(source.GetBold());
-        destination.SetItalic(source.GetItalic());
-        destination.SetOutline(source.GetOutlineSize(), source.GetOutlineColor());
-        int textWidth, textHeight;
-        float width, height;
-        source.GetTextSize(textWidth, textHeight);
-        destination.GetScreenSize(width, height);
-        if (height > 0 && textHeight > 0)
-            destination.SetTextProportion(Math.Clamp(textHeight / height, 0.1, 1.0));
-        else
-            destination.SetTextProportion(source.GetTextProportion());
-    }
-
-    void MatchNativeTypography(TextWidget heading, TextWidget label)
-    {
-        MatchText(heading, TextWidget.Cast(m_Root.FindAnyWidget("GRZSectionTitle")));
-        MatchText(label, TextWidget.Cast(m_Root.FindAnyWidget("GRZFovLabel")));
-        MatchText(label, TextWidget.Cast(m_Root.FindAnyWidget("GRZViewLabel")));
-        MatchText(label, TextWidget.Cast(m_Root.FindAnyWidget("GRZObjectsLabel")));
-        MatchText(label, m_FovValue);
-        MatchText(label, m_ViewValue);
-        MatchText(label, m_ObjectsValue);
-    }
-
-    void SetSectionOrder(int order)
-    {
-        m_Root.SetSort(order);
-    }
-
-    override bool OnChange(Widget w, int x, int y, bool finished)
-    {
-        if (w == m_Fov || w == m_View || w == m_Objects)
-        {
-            RefreshValues();
-            if (m_Menu)
-                m_Menu.OnChanged();
-            return true;
-        }
-        return super.OnChange(w, x, y, finished);
-    }
-
-
-    private void CaptureSavedValues()
-    {
-        m_SavedFov = m_Fov.GetCurrent();
-        m_SavedView = m_View.GetCurrent();
-        m_SavedObjects = m_Objects.GetCurrent();
-    }
-
-    bool IsChanged()
-    {
-        return Math.AbsFloat(m_Fov.GetCurrent() - m_SavedFov) > 0.0001 || Math.AbsFloat(m_View.GetCurrent() - m_SavedView) > 0.1 || Math.AbsFloat(m_Objects.GetCurrent() - m_SavedObjects) > 0.1;
-    }
-
-    bool Save()
-    {
-        if (!IsChanged())
-            return true;
-        GRZCameraPreferences preferences = new GRZCameraPreferences();
-        preferences.Enabled = true;
-        preferences.FieldOfView = m_Fov.GetCurrent();
-        preferences.ViewDistance = m_View.GetCurrent();
-        preferences.ObjectDistance = m_Objects.GetCurrent();
-        string error;
-        if (!GRZCameraPreferences.SaveAndApply(preferences, error))
-        {
-            m_Status.Show(true);
-            m_Status.SetText("Could not save GRZ settings. Check your DayZ profile folder.");
-            Print("[GRZ SETTINGS] " + error);
-            return false;
-        }
-        CaptureSavedValues();
-        m_Status.Show(false);
-        return true;
-    }
-
-    void Revert()
-    {
-        m_Fov.SetCurrent(m_SavedFov);
-        m_View.SetCurrent(m_SavedView);
-        m_Objects.SetCurrent(m_SavedObjects);
-        RefreshValues();
-    }
-
-    void Defaults()
-    {
-        m_Fov.SetCurrent(1.0);
-        m_View.SetCurrent(2000);
-        m_Objects.SetCurrent(2000);
-        RefreshValues();
-    }
-}
-
-modded class OptionsMenuGame
-{
-    private ref GRZCameraSettingsPanel m_GRZCameraPanel;
-
-    private TextWidget GRZFindText(Widget root, Widget excluded)
+    static TextWidget FindText(Widget root, Widget excluded)
     {
         if (!root || root == excluded)
             return null;
@@ -196,7 +21,7 @@ modded class OptionsMenuGame
         Widget child = root.GetChildren();
         while (child)
         {
-            TextWidget found = GRZFindText(child, excluded);
+            TextWidget found = FindText(child, excluded);
             if (found)
                 return found;
             child = child.GetSibling();
@@ -204,51 +29,174 @@ modded class OptionsMenuGame
         return null;
     }
 
+    private Widget CreateNativeOption(string layout, Widget parent, int order, string label, out Widget row)
+    {
+        // Instantiate the native layout as a temporary rowTemplate, move only its
+        // unmodified FOV row into our category, then discard the unused rowTemplate.
+        Widget rowTemplate = GetGame().GetWorkspace().CreateWidgets(layout);
+        if (!rowTemplate)
+            return null;
+        rowTemplate.Show(false);
+        Widget option = rowTemplate.FindAnyWidget("fov_setting_option");
+        if (!option || !option.GetParent())
+        {
+            rowTemplate.Unlink();
+            return null;
+        }
+        row = option.GetParent();
+        TextWidget nativeLabel = FindText(row, option);
+        if (nativeLabel)
+            nativeLabel.SetText(label);
+        row.GetParent().RemoveChild(row);
+        parent.AddChild(row);
+        row.SetSort(order);
+        row.Show(true);
+        option.SetUserID(-1);
+        rowTemplate.Unlink();
+        return option;
+    }
+
+    void GRZCameraSettingsPanel(Widget nativeFov, string nativeLayout, OptionsMenu menu)
+    {
+        Widget fovRow = nativeFov.GetParent();
+        Widget rows = fovRow.GetParent();
+        Widget viewRow, objectsRow;
+        Widget viewOption = CreateNativeOption(nativeLayout, rows, fovRow.GetSort() + 1, "VIEW DISTANCE", viewRow);
+        Widget objectsOption = CreateNativeOption(nativeLayout, rows, fovRow.GetSort() + 2, "OBJECT VIEW DISTANCE", objectsRow);
+        if (!viewOption || !objectsOption)
+        {
+            if (viewRow)
+                viewRow.Unlink();
+            if (objectsRow)
+                objectsRow.Unlink();
+            Print("[GRZ SETTINGS] Native row rowTemplate unavailable; original controls retained.");
+            return;
+        }
+        // Retain the vanilla selector's widgets for its normal revert/destructor
+        // lifecycle, but hide them before adding the enhanced native selector.
+        Widget oldSlider = nativeFov.GetChildren();
+        while (oldSlider)
+        {
+            oldSlider.Show(false);
+            oldSlider = oldSlider.GetSibling();
+        }
+        GRZCameraPreferences saved = GRZCameraPreferences.Current();
+        m_Fov = new OptionSelectorSlider(nativeFov, Math.Clamp(GetDayZGame().GetUserFOV(), 0.9, 2.0), this, false, 0.9, 2.0);
+        m_View = new OptionSelectorSlider(viewOption, saved.ViewDistance, this, false, 500, 5000);
+        m_Objects = new OptionSelectorSlider(objectsOption, saved.ObjectDistance, this, false, 500, 5000);
+        m_Fov.SetStep(0.001);
+        m_View.SetStep(50.0 / 4500.0);
+        m_Objects.SetStep(50.0 / 4500.0);
+        m_Fov.m_OptionChanged.Insert(OnValueChanged);
+        m_View.m_OptionChanged.Insert(OnValueChanged);
+        m_Objects.m_OptionChanged.Insert(OnValueChanged);
+        m_Menu = menu;
+        m_Ready = true;
+        CaptureSavedValues();
+        rows.Update();
+    }
+
+    bool IsReady()
+    {
+        return m_Ready;
+    }
+
+    private void OnValueChanged(float value)
+    {
+        if (!m_Ready)
+            return;
+        if (m_Objects.GetValue() > m_View.GetValue())
+            m_Objects.SetValue(m_View.GetValue(), false);
+        m_Menu.OnChanged();
+    }
+
+    private void CaptureSavedValues()
+    {
+        m_SavedFov = m_Fov.GetValue();
+        m_SavedView = m_View.GetValue();
+        m_SavedObjects = m_Objects.GetValue();
+    }
+
+    bool IsChanged()
+    {
+        if (!m_Ready)
+            return false;
+        return Math.AbsFloat(m_Fov.GetValue() - m_SavedFov) > 0.0001 || Math.AbsFloat(m_View.GetValue() - m_SavedView) > 0.1 || Math.AbsFloat(m_Objects.GetValue() - m_SavedObjects) > 0.1;
+    }
+
+    void Save()
+    {
+        if (!IsChanged())
+            return;
+        GRZCameraPreferences preferences = new GRZCameraPreferences();
+        preferences.Enabled = true;
+        preferences.FieldOfView = m_Fov.GetValue();
+        preferences.ViewDistance = m_View.GetValue();
+        preferences.ObjectDistance = m_Objects.GetValue();
+        string error;
+        if (!GRZCameraPreferences.SaveAndApply(preferences, error))
+        {
+            Print("[GRZ SETTINGS] Could not save preferences: " + error);
+            GetGame().GetUIManager().ShowDialog("GUNRUNNERZ FOV", "Could not save settings. Check your DayZ profile folder.", 973195, DBT_OK, DBB_OK, DMT_INFO, m_Menu);
+            return;
+        }
+        CaptureSavedValues();
+    }
+
+    void Revert()
+    {
+        if (!m_Ready)
+            return;
+        m_Fov.SetValue(m_SavedFov, false);
+        m_View.SetValue(m_SavedView, false);
+        m_Objects.SetValue(m_SavedObjects, false);
+    }
+
+    void Defaults()
+    {
+        if (!m_Ready)
+            return;
+        m_Fov.SetValue(1.0, false);
+        m_View.SetValue(2000, false);
+        m_Objects.SetValue(2000, false);
+    }
+}
+
+modded class OptionsMenuGame
+{
+    private ref GRZCameraSettingsPanel m_GRZCameraPanel;
+
     void OptionsMenuGame(Widget parent, Widget details_root, GameOptions options, OptionsMenu menu)
     {
         GRZCameraPreferences.Load();
         Widget nativeFov = m_Root.FindAnyWidget("fov_setting_option");
         Widget settingsRoot = m_Root.FindAnyWidget("game_settings_root");
-        if (nativeFov && nativeFov.GetParent() && settingsRoot)
+        if (!nativeFov || !nativeFov.GetParent() || !nativeFov.GetParent().GetParent() || !settingsRoot)
+            return;
+        Widget cameraRow = nativeFov.GetParent();
+        Widget category = cameraRow;
+        while (category.GetParent() && category.GetParent() != settingsRoot && category.GetParent() != m_Root)
         {
-            Widget cameraRow = nativeFov.GetParent();
-            Widget cameraSection = cameraRow;
-            // Find the complete category directly beneath the settings stack,
-            // rather than inserting our panel into a nested single-row widget.
-            while (cameraSection.GetParent() && cameraSection.GetParent() != settingsRoot && cameraSection.GetParent() != m_Root)
-            {
-                Widget nextParent = cameraSection.GetParent();
-                // Never replace a container that also contains General/HUD.
-                if (nextParent.FindAnyWidget("language_setting_option") || nextParent.FindAnyWidget("hud_setting_option"))
-                    break;
-                cameraSection = nextParent;
-            }
-            if (cameraSection == settingsRoot || cameraSection == m_Root)
-            {
-                Print("[GRZ SETTINGS] Camera category not found; original UI retained.");
-                return;
-            }
-            float rowWidth, rowHeight, sectionWidth, sectionHeight;
-            cameraRow.GetScreenSize(rowWidth, rowHeight);
-            cameraSection.GetScreenSize(sectionWidth, sectionHeight);
-            if (rowHeight < 20 || rowHeight > 70)
-                rowHeight = 32;
-            TextWidget nativeLabel = GRZFindText(cameraRow, nativeFov);
-            TextWidget nativeHeading = GRZFindText(cameraSection, cameraRow);
-            Widget originalChild = cameraSection.GetChildren();
-            while (originalChild)
-            {
-                originalChild.Show(false);
-                originalChild = originalChild.GetSibling();
-            }
-            nativeFov.Enable(false);
-            cameraSection.SetScreenSize(sectionWidth, rowHeight * 4);
-            m_GRZCameraPanel = new GRZCameraSettingsPanel(cameraSection, menu);
-            cameraSection.Update();
-            settingsRoot.Update();
-            m_GRZCameraPanel.MatchNativeTypography(nativeHeading, nativeLabel);
-            Print("[GRZ SETTINGS] Replaced native Camera category: " + cameraSection.GetName());
+            Widget next = category.GetParent();
+            if (next.FindAnyWidget("language_setting_option") || next.FindAnyWidget("hud_setting_option"))
+                break;
+            category = next;
         }
+        TextWidget heading = GRZCameraSettingsPanel.FindText(category, cameraRow);
+        float rowWidth, rowHeight, width, height;
+        cameraRow.GetScreenSize(rowWidth, rowHeight);
+        category.GetScreenSize(width, height);
+        m_GRZCameraPanel = new GRZCameraSettingsPanel(nativeFov, GetLayoutName(), menu);
+        if (!m_GRZCameraPanel.IsReady())
+            return;
+        if (heading)
+            heading.SetText("GUNRUNNERZ FOV");
+        // Add exactly two native row heights, preserving the native header and
+        // existing margins instead of introducing a custom section or gap.
+        if (rowHeight > 0)
+            category.SetScreenSize(width, height + 2 * rowHeight);
+        category.Update();
+        settingsRoot.Update();
     }
 
     override bool IsChanged()
@@ -282,7 +230,6 @@ modded class OptionsMenu
     override void Apply()
     {
         super.Apply();
-        // Native options may set render distances; apply GRZ after them.
         m_GameTab.GRZSaveCameraPreferences();
         GRZCameraPreferences.ApplyDistances();
         OnChanged();
