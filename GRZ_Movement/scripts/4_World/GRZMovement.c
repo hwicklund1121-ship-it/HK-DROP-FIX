@@ -7,11 +7,11 @@ class GRZMovementResponse
     {
         SHumanCommandMoveSettings settings = playerType.CommandMoveSettingsW();
 
-        // Fast acceleration and direction response, matching the supplied preset.
-        settings.m_fRunSpringTimeout = 0.01;
-        settings.m_fRunSpringMaxChange = 200.0;
-        settings.m_fDirFilterTimeout = 0.1;
-        settings.m_fDirFilterSprintTimeout = 0.1;
+        // Mild acceleration/strafe easing; retain the existing turning and lean.
+        settings.m_fRunSpringTimeout = 0.06;
+        settings.m_fRunSpringMaxChange = 100.0;
+        settings.m_fDirFilterTimeout = 0.14;
+        settings.m_fDirFilterSprintTimeout = 0.14;
         settings.m_fDirFilterSpeed = 360.0 * Math.DEG2RAD;
         settings.m_fMaxSprintAngle = 45.01 * Math.DEG2RAD;
 
