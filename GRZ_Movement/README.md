@@ -1,4 +1,4 @@
-# GRZ Movement 0.3 — running lean
+# GRZ Movement 0.4 — steady third-person camera
 
 Fresh movement-response implementation for DayZ 1.30. Uses the supplied LWP response values: 0.01 sprint smoothing, 200 acceleration limit, 0.1 strafe smoothing, 17-degree turn threshold, 6.5 lean speed and unrestricted water movement speed. Initializes through the native implementation first. No animation assets from LUGU are included or changed.
 
@@ -19,3 +19,5 @@ Source: GRZ_Movement/scripts/4_World/GRZMovement.c. Rebuild with `python tools/b
 See PROVENANCE.md for package contents and rights limitations. No guarantee against copyright claims is made.
 
 Version 0.3 adds only GRZRunningLean.c to the runtime payload. It skips the native sprint-start lean-input locks. Movement tuning and camera code are byte-identical to version 0.2. Test left/right lean while jogging and sprinting, hold lean while entering/leaving sprint, release lean to check return to center, and repeat the LUGU sequence. In-game validation is required.
+
+Version 0.4 adds GRZSteadyCamera.c: zero sprint camera roll and removal of the crouch speed-height contribution after the native update. The raised crouch camera inherits this correction. Existing movement, running lean, FOV policy and LUGU resources are unchanged. This addresses third-person locomotion bob; first-person head-bone motion, intentional lean, recoil, impact shake, stance transitions and LUGU prone motion are not removed. Test sprint and crouch movement, both shoulders, held zoom, raised weapons and the drop sequence. Runtime validation is required.
