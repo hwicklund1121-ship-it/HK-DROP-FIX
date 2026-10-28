@@ -1,4 +1,4 @@
-# GRZ Movement 0.27 — restore non-overlapping settings layout
+# GRZ Movement 0.28 — smaller softer settings text
 
 
 This build rolls back the broken v0.26 native-row insertion. Settings UI runtime files are restored byte-for-byte from v0.25: the separate GUNRUNNERZ FOV heading, translucent rows and custom sliders with white fill. The requested exact native appearance remains unfinished. Existing saved preferences and all movement/zoom/camera resources are retained.
@@ -72,3 +72,5 @@ Version 0.25 capitalizes GUNRUNNERZ FOV, matches text sizing/bold/italic/outline
 Version 0.26 removes the custom layout, font/color overrides, fills and marker code. Retains the native Camera heading/row and relabels the heading GUNRUNNERZ FOV; creates the two distance rows from the installed DayZ game_tab layout and uses the native OptionSelectorSlider for all three controls. Labels, brightness, background, borders, hover and fill therefore come from the installed game resources. No native layout is bundled in the PBO. Slider values use their existing ranges/preferences but are displayed like vanilla sliders rather than custom number overlays. The category grows by two native row heights. All prior World and Game scripts are unchanged. Dynamic row reparenting, spacing, input and save/rejoin require in-game verification. Earlier UI implementation notes are superseded.
 
 Version 0.27 restores the complete v0.25 runtime payload following the user screenshot showing all three native-cloned rows stacked in v0.26. This is a regression rollback, not a claim that native styling is finished.
+
+Version 0.28 addresses the supplied screenshot of oversized bright text: removes automatic native text-bounds sizing; fixes heading proportion at 0.65 and body/value proportions at 0.55; disables bold, italic, outline and shadow and sets text to RGB 210/210/210. The font resource remains the existing DayZ MetronBook font. White fill opacity is reduced to 30%. Existing placement, ranges, persistence and gameplay resources are unchanged. These are visual tuning values, not a verified exact native match; check in-game at the same UI scale.

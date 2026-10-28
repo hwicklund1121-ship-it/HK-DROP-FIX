@@ -85,32 +85,29 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
         fill.SetSize(fraction, 1.0);
     }
 
-    private void MatchText(TextWidget source, TextWidget destination)
+    private void StyleText(string name, float proportion)
     {
-        if (!source || !destination)
+        TextWidget text = TextWidget.Cast(m_Root.FindAnyWidget(name));
+        if (!text)
             return;
-        destination.SetBold(source.GetBold());
-        destination.SetItalic(source.GetItalic());
-        destination.SetOutline(source.GetOutlineSize(), source.GetOutlineColor());
-        int textWidth, textHeight;
-        float width, height;
-        source.GetTextSize(textWidth, textHeight);
-        destination.GetScreenSize(width, height);
-        if (height > 0 && textHeight > 0)
-            destination.SetTextProportion(Math.Clamp(textHeight / height, 0.1, 1.0));
-        else
-            destination.SetTextProportion(source.GetTextProportion());
+        text.SetTextProportion(proportion);
+        text.SetBold(false);
+        text.SetItalic(false);
+        text.SetOutline(0);
+        text.SetShadow(0, ARGB(0, 0, 0, 0));
+        text.SetColor(ARGB(255, 210, 210, 210));
     }
 
     void MatchNativeTypography(TextWidget heading, TextWidget label)
     {
-        MatchText(heading, TextWidget.Cast(m_Root.FindAnyWidget("GRZSectionTitle")));
-        MatchText(label, TextWidget.Cast(m_Root.FindAnyWidget("GRZFovLabel")));
-        MatchText(label, TextWidget.Cast(m_Root.FindAnyWidget("GRZViewLabel")));
-        MatchText(label, TextWidget.Cast(m_Root.FindAnyWidget("GRZObjectsLabel")));
-        MatchText(label, m_FovValue);
-        MatchText(label, m_ViewValue);
-        MatchText(label, m_ObjectsValue);
+        // Fixed proportions avoid the text-bounds ratio that enlarged glyphs.
+        StyleText("GRZSectionTitle", 0.65);
+        StyleText("GRZFovLabel", 0.55);
+        StyleText("GRZViewLabel", 0.55);
+        StyleText("GRZObjectsLabel", 0.55);
+        StyleText("GRZFovValue", 0.55);
+        StyleText("GRZViewValue", 0.55);
+        StyleText("GRZObjectsValue", 0.55);
     }
 
     void SetSectionOrder(int order)

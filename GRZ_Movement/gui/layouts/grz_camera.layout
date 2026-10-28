@@ -55,7 +55,7 @@ TextWidgetClass GRZSectionTitle
  vexactsize 0
  text "GUNRUNNERZ FOV"
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.75
+ text_proportion 0.55
  ignorepointer 1
 }
  }
@@ -103,7 +103,7 @@ TextWidgetClass GRZFovLabel
  vexactsize 0
  text "FIELD OF VIEW"
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.75
+ text_proportion 0.55
  ignorepointer 1
 }
 SliderWidgetClass GRZFov
@@ -124,7 +124,7 @@ ImageWidgetClass GRZFovFill
  vexactpos 0
  hexactsize 0
  vexactsize 0
- color 1 1 1 0.60
+ color 1 1 1 0.30
  blend 1
  ignorepointer 1
  image0 "#(argb,8,8,3)color(1,1,1,1,co)"
@@ -153,7 +153,7 @@ TextWidgetClass GRZFovValue
  hexactsize 0
  vexactsize 0
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.75
+ text_proportion 0.55
  ignorepointer 1
 }
  }
@@ -201,7 +201,7 @@ TextWidgetClass GRZViewLabel
  vexactsize 0
  text "VIEW DISTANCE"
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.75
+ text_proportion 0.55
  ignorepointer 1
 }
 SliderWidgetClass GRZView
@@ -222,7 +222,7 @@ ImageWidgetClass GRZViewFill
  vexactpos 0
  hexactsize 0
  vexactsize 0
- color 1 1 1 0.60
+ color 1 1 1 0.30
  blend 1
  ignorepointer 1
  image0 "#(argb,8,8,3)color(1,1,1,1,co)"
@@ -251,7 +251,7 @@ TextWidgetClass GRZViewValue
  hexactsize 0
  vexactsize 0
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.75
+ text_proportion 0.55
  ignorepointer 1
 }
  }
@@ -299,7 +299,7 @@ TextWidgetClass GRZObjectsLabel
  vexactsize 0
  text "OBJECT VIEW DISTANCE"
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.75
+ text_proportion 0.55
  ignorepointer 1
 }
 SliderWidgetClass GRZObjects
@@ -320,7 +320,7 @@ ImageWidgetClass GRZObjectsFill
  vexactpos 0
  hexactsize 0
  vexactsize 0
- color 1 1 1 0.60
+ color 1 1 1 0.30
  blend 1
  ignorepointer 1
  image0 "#(argb,8,8,3)color(1,1,1,1,co)"
@@ -349,7 +349,7 @@ TextWidgetClass GRZObjectsValue
  hexactsize 0
  vexactsize 0
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.75
+ text_proportion 0.55
  ignorepointer 1
 }
  }
@@ -364,7 +364,7 @@ TextWidgetClass GRZStatus
  hexactsize 0
  vexactsize 0
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.75
+ text_proportion 0.55
  ignorepointer 1
 }
  }
