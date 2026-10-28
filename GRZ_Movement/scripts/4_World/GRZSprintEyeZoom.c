@@ -27,4 +27,22 @@ modded class DayZPlayerCamera3rdPersonErcSpr
     {
         m_fDistance = 1.6;
     }
+
+    override void OnUpdate(float pDt, out DayZPlayerCameraResult pOutResult)
+    {
+        // Standing and sprinting must use the same framing while eye zoom is
+        // active: matching distance alone leaves a pivot/shoulder shift.
+        bool eyeZoom = m_pPlayer.GetEyeZoomLevel() != ECameraZoomType.NONE;
+        if (eyeZoom)
+        {
+            m_CameraOffsetMS[1] = 1.4;
+            m_fShoulderWidth = 0.3;
+        }
+        else
+        {
+            m_CameraOffsetMS[1] = 1.3;
+            m_fShoulderWidth = 0.15;
+        }
+        super.OnUpdate(pDt, pOutResult);
+    }
 }

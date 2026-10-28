@@ -49,6 +49,6 @@ modded class DayZPlayerCamera3rdPerson
         }
         if (camera != "DayZPlayerCamera3rdPersonErcSpr" && camera != "DayZPlayerCamera3rdPersonErc" && camera != "DayZPlayerCamera3rdPersonErcRaised" && camera != "DayZPlayerCamera3rdPersonErcRaisedMelee" && camera != "DayZPlayerCamera3rdPersonCrouch" && camera != "DayZPlayerCamera3rdPersonCrouchRaised")
             return;
-        pOutResult.m_fDistance = player.GRZMovementCameraDistance(pOutResult.m_fDistance, true);
+        pOutResult.m_fDistance = player.GRZMovementCameraDistance(pOutResult.m_fDistance, false);
     }
 }
