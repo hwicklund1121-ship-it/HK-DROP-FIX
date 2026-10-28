@@ -1,4 +1,4 @@
-# GRZ Movement 0.29 — reference FOV and distance ranges
+# GRZ Movement 0.30 — no automatic weapon lift near objects
 
 
 Settings > Game > GUNRUNNERZ FOV now uses the limits shown in the supplied references:
@@ -82,3 +82,5 @@ Version 0.27 restores the complete v0.25 runtime payload following the user scre
 Version 0.28 addresses the supplied screenshot of oversized bright text: removes automatic native text-bounds sizing; fixes heading proportion at 0.65 and body/value proportions at 0.55; disables bold, italic, outline and shadow and sets text to RGB 210/210/210. The font resource remains the existing DayZ MetronBook font. White fill opacity is reduced to 30%. Existing placement, ranges, persistence and gameplay resources are unchanged. These are visual tuning values, not a verified exact native match; check in-game at the same UI scale.
 
 Version 0.29 changes only preference validation and UI slider ranges to FOV 0.52–1.5599 and distances 500–2000 from the supplied screenshots. FOV slider precision is 0.0001. Existing default FOV 1.0 and distances 2000 remain valid. Historical notes above describe older builds.
+
+Version 0.30 adds GRZNoObjectWeaponLift.c. Replaces the owning client's CheckLiftWeapon obstruction check with clearing lift/obstruction state via SendLiftWeaponSync(false, 0), only if state needs clearing. This disables automatic object-triggered weapon lift and the obstruction value used for ADS blocking. Native manual weapon raise/lower, weapon commands, network state processing and projectile/geometry collision are unchanged. Applies to all weapons through PlayerBase; custom weapon overrides may need separate compatibility work. This is always enabled in this build, not a new UI toggle. Use the same build client/server where required. Test long rifle, pistol, attached optics, walls/doorframes/cover, normal ADS entry/exit and another player's view. Runtime and multiplayer validation are required. All existing resources are byte-identical to v0.29.
