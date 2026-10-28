@@ -1,32 +1,47 @@
-// GRZ Movement: tune movement response after the engine initializes its defaults.
-// Animation graphs, throwing, stance recovery and camera selection stay with
-// DayZ and the separately installed LUGU addon.
-class GRZMovementResponse
+// GRZ response preset. These settings preserve the v0.15 movement behavior.
+class GRZMovementPreset
 {
-    static void Apply(DayZPlayerType playerType)
+    static const float ACCELERATION_SPAN = 0.06;
+    static const float ACCELERATION_LIMIT = 100.0;
+    static const float STRAFE_SPAN = 0.14;
+    static const float TURN_THRESHOLD = 17.0;
+    static const float LEAN_RESPONSE = 6.5;
+
+    static void ConfigureResponse(SHumanCommandMoveSettings movement)
     {
-        SHumanCommandMoveSettings settings = playerType.CommandMoveSettingsW();
+        movement.m_fRunSpringTimeout = ACCELERATION_SPAN;
+        movement.m_fRunSpringMaxChange = ACCELERATION_LIMIT;
+        movement.m_fDirFilterTimeout = STRAFE_SPAN;
+        movement.m_fDirFilterSprintTimeout = STRAFE_SPAN;
+        movement.m_fDirFilterSpeed = Math.DEG2RAD * 360.0;
+        movement.m_fMaxSprintAngle = Math.DEG2RAD * 45.01;
+    }
 
-        // Mild acceleration/strafe easing; retain the existing turning and lean.
-        settings.m_fRunSpringTimeout = 0.06;
-        settings.m_fRunSpringMaxChange = 100.0;
-        settings.m_fDirFilterTimeout = 0.14;
-        settings.m_fDirFilterSprintTimeout = 0.14;
-        settings.m_fDirFilterSpeed = 360.0 * Math.DEG2RAD;
-        settings.m_fMaxSprintAngle = 45.01 * Math.DEG2RAD;
+    static void ConfigureTurning(SHumanCommandMoveSettings movement)
+    {
+        movement.m_fTurnAngle = TURN_THRESHOLD;
+        movement.m_fTurnEndUpdateNTime = 0.7;
+        movement.m_fTurnNextNTime = 0.9;
+        movement.m_fHeadingChangeLimiterIdle = 500000.0;
+        movement.m_fHeadingChangeLimiterWalk = 2000.0;
+        movement.m_fHeadingChangeLimiterRun = 1500.0;
+        movement.m_fLeaningSpeed = LEAN_RESPONSE;
+    }
 
-        settings.m_fTurnAngle = 17.0;
-        settings.m_fTurnEndUpdateNTime = 0.7;
-        settings.m_fTurnNextNTime = 0.9;
-        settings.m_fHeadingChangeLimiterIdle = 500000.0;
-        settings.m_fHeadingChangeLimiterWalk = 2000.0;
-        settings.m_fHeadingChangeLimiterRun = 1500.0;
-        settings.m_fLeaningSpeed = 6.5;
+    static void ConfigureWaterMovement(SHumanCommandMoveSettings movement)
+    {
+        movement.m_iMaxSpeedNormal_WaterLevelLow = -1;
+        movement.m_iMaxSpeedFast_WaterLevelLow = -1;
+        movement.m_iMaxSpeedNormal_WaterLevelHigh = -1;
+        movement.m_iMaxSpeedFast_WaterLevelHigh = -1;
+    }
 
-        settings.m_iMaxSpeedNormal_WaterLevelLow = -1;
-        settings.m_iMaxSpeedFast_WaterLevelLow = -1;
-        settings.m_iMaxSpeedNormal_WaterLevelHigh = -1;
-        settings.m_iMaxSpeedFast_WaterLevelHigh = -1;
+    static void ApplyTo(DayZPlayerType playerType)
+    {
+        SHumanCommandMoveSettings movement = playerType.CommandMoveSettingsW();
+        ConfigureResponse(movement);
+        ConfigureTurning(movement);
+        ConfigureWaterMovement(movement);
     }
 }
 
@@ -35,6 +50,6 @@ modded class DayZPlayerTypeUtils
     override static void DayZPlayerTypeInitMovement(DayZPlayerType pType)
     {
         super.DayZPlayerTypeInitMovement(pType);
-        GRZMovementResponse.Apply(pType);
+        GRZMovementPreset.ApplyTo(pType);
     }
 }

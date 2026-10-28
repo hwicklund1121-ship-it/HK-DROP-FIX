@@ -1,4 +1,4 @@
-# GRZ Movement 0.15 — mild movement easing
+# GRZ Movement 0.16 — organized response preset
 
 Fresh movement-response implementation for DayZ 1.30. Uses 0.06 sprint smoothing, 100 acceleration limit, 0.14 strafe smoothing, a 17-degree turn threshold, 6.5 lean speed and unrestricted water movement speed. Initializes through the native implementation first. No animation assets from LUGU are included or changed.
 
@@ -43,3 +43,5 @@ Version 0.13 is a diagnostic build with v0.12 camera behavior unchanged. GRZZoom
 Version 0.14 uses the uploaded 00-33-20 trace: 25 eye=SHALLOW samples occurred with stance=1 (crouch), bypassing the previous standing-only getter. The getter now promotes SHALLOW during lowered standing or crouching movement. GRZZoomContinuity.c carries prior FOV into newly activated ordinary movement cameras during eye zoom, keeping the native target/smoothing and excluding ADS, special cameras and prone. No distance, pivot or movement tuning changes. Bounded diagnostic trace remains (version=0.14) for verification. Test held zoom run → crouch → stand and button release; provide a fresh trace if pullback remains. This is evidence-based targeting but not yet in-game verified.
 
 Version 0.15 changes only GRZMovement.c runtime tuning: sprint response span 0.01→0.06, maximum response change 200→100, jog/sprint direction-filter spans 0.10→0.14. This is a mild easing preset, not camera smoothing or animation replacement. Turning thresholds, heading limits, leaning, zoom, bob removal and recovery camera logic are unchanged. Compare starts/stops, alternating A/D, sprint turns and the LUGU sequence on flat/sloped ground. Engine timing/filter parameters are not a promise of exact input delay. Feel and LUGU behavior require in-game testing; v0.14 remains available for comparison.
+
+Version 0.16 organizes the v0.15 movement settings into named preset constants and separate response, turning and water-configuration functions. This is a readability/maintenance refactor, not a new provenance claim or a copyright workaround. All parameter assignments retain their v0.15 values; other runtime resources are unchanged. DayZ API/class names necessarily remain as required by the engine. The development references described in PROVENANCE.md still apply. Runtime compilation must be verified in DayZ.
