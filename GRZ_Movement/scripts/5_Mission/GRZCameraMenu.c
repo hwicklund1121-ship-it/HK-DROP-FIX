@@ -44,6 +44,9 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
         m_View.SetCurrent(saved.ViewDistance);
         m_Objects.SetCurrent(saved.ObjectDistance);
         RefreshValues();
+        TextWidget heading = TextWidget.Cast(m_Root.FindAnyWidget("GRZSectionTitle"));
+        heading.SetFlags(WidgetFlags.CENTER | WidgetFlags.VCENTER);
+        heading.SetTextProportion(0.8);
         m_Root.SetHandler(this);
         m_Menu = menu;
         CaptureSavedValues();
@@ -144,16 +147,43 @@ modded class OptionsMenuGame
     {
         GRZCameraPreferences.Load();
         Widget nativeFov = m_Root.FindAnyWidget("fov_setting_option");
-        if (nativeFov && nativeFov.GetParent() && nativeFov.GetParent().GetParent())
+        Widget settingsRoot = m_Root.FindAnyWidget("game_settings_root");
+        if (nativeFov && nativeFov.GetParent() && settingsRoot)
         {
-            // Add an independently titled section immediately after the native
-            // Camera FOV row, retaining the existing Camera heading and row.
             Widget cameraRow = nativeFov.GetParent();
-            Widget cameraSection = cameraRow.GetParent();
-            m_GRZCameraPanel = new GRZCameraSettingsPanel(cameraSection, menu);
-            m_GRZCameraPanel.SetSectionOrder(cameraRow.GetSort() + 1);
+            Widget cameraSection = cameraRow;
+            // Find the complete category directly beneath the settings stack,
+            // rather than inserting our panel into a nested single-row widget.
+            while (cameraSection.GetParent() && cameraSection.GetParent() != settingsRoot && cameraSection.GetParent() != m_Root)
+            {
+                Widget nextParent = cameraSection.GetParent();
+                // Never replace a container that also contains General/HUD.
+                if (nextParent.FindAnyWidget("language_setting_option") || nextParent.FindAnyWidget("hud_setting_option"))
+                    break;
+                cameraSection = nextParent;
+            }
+            if (cameraSection == settingsRoot || cameraSection == m_Root)
+            {
+                Print("[GRZ SETTINGS] Camera category not found; original UI retained.");
+                return;
+            }
+            float rowWidth, rowHeight, sectionWidth, sectionHeight;
+            cameraRow.GetScreenSize(rowWidth, rowHeight);
+            cameraSection.GetScreenSize(sectionWidth, sectionHeight);
+            if (rowHeight < 20 || rowHeight > 70)
+                rowHeight = 32;
+            Widget originalChild = cameraSection.GetChildren();
+            while (originalChild)
+            {
+                originalChild.Show(false);
+                originalChild = originalChild.GetSibling();
+            }
             nativeFov.Enable(false);
+            cameraSection.SetScreenSize(sectionWidth, rowHeight * 5);
+            m_GRZCameraPanel = new GRZCameraSettingsPanel(cameraSection, menu);
             cameraSection.Update();
+            settingsRoot.Update();
+            Print("[GRZ SETTINGS] Replaced native Camera category: " + cameraSection.GetName());
         }
     }
 

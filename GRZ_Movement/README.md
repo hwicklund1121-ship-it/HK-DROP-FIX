@@ -1,15 +1,15 @@
-# GRZ Movement 0.21 — GunRunnerZ FOV camera rows
+# GRZ Movement 0.22 — replace duplicate Camera category
 
 
-Open **Settings > Game**, then look for the separate **GunRunnerZ FOV** section directly below **Camera**. The sliders are inside the normal Settings screen; there is no F7 menu. Use the normal Settings **Apply**, **Reset**, **Defaults**, and **Back** controls. Values are not previewed before Apply; leaving without applying discards edits.
+Open **Settings > Game**, then look for the **GunRunnerZ FOV** section replacing the original **Camera** category. The sliders are inside the normal Settings screen; there is no F7 menu. Use the normal Settings **Apply**, **Reset**, **Defaults**, and **Back** controls. Values are not previewed before Apply; leaving without applying discards edits.
 
 - GunRunnerZ FOV: 0.900–2.000 (DayZ camera FOV units/radians, not degrees).
 - View distance: 500–5,000 metres.
 - Object distance: 500–5,000 metres, capped to view distance.
 
-First launch leaves game-managed settings active until GRZ values are changed and applied. The new sliders start with the current FOV and GRZ's 2,000m distance defaults, not a readback of the native render distances. The original Camera section is retained; its clamped FOV control is disabled to avoid conflicting with the enhanced slider in the separate GunRunnerZ FOV section. Apply saves all three GRZ values to `$profile:GRZMovementCamera.json` and applies them; saved preferences load on mission start. Remove that file and restart to restore game-managed values. Save failures appear in the GRZ section and script log.
+First launch leaves game-managed settings active until GRZ values are changed and applied. The new sliders start with the current FOV and GRZ's 2,000m distance defaults, not a readback of the native render distances. The original Camera category is hidden and replaced with the GunRunnerZ FOV heading and three translucent-black rows; its native control objects remain alive for the normal options lifecycle. Apply saves all three GRZ values to `$profile:GRZMovementCamera.json` and applies them; saved preferences load on mission start. Remove that file and restart to restore game-managed values. Save failures appear in the GRZ section and script log.
 
-The menu uses an original dark-row layout added as a separately titled section directly after the native Camera FOV row, without replacing DayZ's full layout. Its placement, scrolling and scaling require in-game verification. This first version targets the PC mouse/keyboard menu; console/gamepad navigation is not verified.
+The menu uses an original dark-row layout fitted into the existing Camera category container, without replacing DayZ's full layout. Its placement, scrolling and scaling require in-game verification. This first version targets the PC mouse/keyboard menu; console/gamepad navigation is not verified.
 
 Render distances are client preferences; weather, engine and server rules can limit actual visibility. Higher values can reduce FPS. Weapon sights and eye zoom keep their existing pipelines and GRZ corrections. Existing movement and 4_World camera resources are unchanged.
 
@@ -68,3 +68,5 @@ Version 0.19 removes GRZCrouchSpeed.c entirely, restoring original crouched move
 Version 0.20 adds original Game/Mission scripts and a native-widget layout embedded in Settings > Game for saved camera preferences. Existing 4_World scripts are byte-identical to v0.19. FOV extends the user-FOV getter only after Apply; no vanilla script or layout is repackaged. API signatures checked against DayZ 1.30 script sources; PBO checksum/payload, layout widget names, script paths and range relationships checked locally. No DayZ compiler or renderer is available here. Test Settings > Game placement/scrolling, slider endpoints, normal Apply/Reset/Defaults/Back, save/rejoin, original movement, HK drop, scope and middle-mouse zoom.
 
 Version 0.21 labels the enhanced slider GunRunnerZ FOV, adds a separate GunRunnerZ FOV heading and three compact dark rows directly below the native Camera row, and adds white track borders plus a white position marker to every slider. Markers follow loaded, edited, reset and default values and ignore pointer events. This reuses no GunRunnerZ artwork or layout. PC hierarchy assumptions and visual scaling require in-game testing. Existing 3_Game preferences and all 4_World resources are unchanged.
+
+Version 0.22 addresses screenshot overlap by finding the complete native Camera category below the game-settings stack, hiding its original heading/row and fitting the GRZ panel into that host. Uses an opaque black heading, translucent black setting rows and fixed-size white text. White slider markers remain. The category host name is logged for troubleshooting. Placement/sizing must be confirmed in-game; if the category is not identifiable the original UI is retained. All rendering preferences and World scripts are unchanged.

@@ -1,11 +1,11 @@
 PanelWidgetClass GRZCameraRoot
 {
  position 0 0
- size 1 210
+ size 1 1
  hexactpos 0
  vexactpos 0
  hexactsize 0
- vexactsize 1
+ vexactsize 0
 
  {
 PanelWidgetClass GRZHeading
@@ -21,14 +21,15 @@ PanelWidgetClass GRZHeading
  {
 TextWidgetClass GRZSectionTitle
 {
- position 0.25 0.05
- size 0.70 0.90
+ position 0 0.05
+ size 1 0.90
  hexactpos 0
  vexactpos 0
  hexactsize 0
  vexactsize 0
  text "GunRunnerZ FOV"
  font "gui/fonts/sdf_MetronBook24"
+ text_proportion 0.65
  ignorepointer 1
 }
  }
@@ -42,7 +43,7 @@ PanelWidgetClass GRZFovRow
  hexactsize 0
  vexactsize 0
  style Colorable
- color 0.06 0.06 0.06 0.92
+ color 0 0 0 0.55
  {
 PanelWidgetClass GRZFovBorder
 {
@@ -78,6 +79,7 @@ TextWidgetClass GRZFovLabel
  vexactsize 0
  text "FIELD OF VIEW"
  font "gui/fonts/sdf_MetronBook24"
+ text_proportion 0.65
  ignorepointer 1
 }
 SliderWidgetClass GRZFov
@@ -113,6 +115,7 @@ TextWidgetClass GRZFovValue
  hexactsize 0
  vexactsize 0
  font "gui/fonts/sdf_MetronBook24"
+ text_proportion 0.65
  ignorepointer 1
 }
  }
@@ -126,7 +129,7 @@ PanelWidgetClass GRZViewRow
  hexactsize 0
  vexactsize 0
  style Colorable
- color 0.06 0.06 0.06 0.92
+ color 0 0 0 0.55
  {
 PanelWidgetClass GRZViewBorder
 {
@@ -162,6 +165,7 @@ TextWidgetClass GRZViewLabel
  vexactsize 0
  text "VIEW DISTANCE"
  font "gui/fonts/sdf_MetronBook24"
+ text_proportion 0.65
  ignorepointer 1
 }
 SliderWidgetClass GRZView
@@ -197,6 +201,7 @@ TextWidgetClass GRZViewValue
  hexactsize 0
  vexactsize 0
  font "gui/fonts/sdf_MetronBook24"
+ text_proportion 0.65
  ignorepointer 1
 }
  }
@@ -210,7 +215,7 @@ PanelWidgetClass GRZObjectsRow
  hexactsize 0
  vexactsize 0
  style Colorable
- color 0.06 0.06 0.06 0.92
+ color 0 0 0 0.55
  {
 PanelWidgetClass GRZObjectsBorder
 {
@@ -246,6 +251,7 @@ TextWidgetClass GRZObjectsLabel
  vexactsize 0
  text "OBJECT VIEW DISTANCE"
  font "gui/fonts/sdf_MetronBook24"
+ text_proportion 0.65
  ignorepointer 1
 }
 SliderWidgetClass GRZObjects
@@ -281,6 +287,7 @@ TextWidgetClass GRZObjectsValue
  hexactsize 0
  vexactsize 0
  font "gui/fonts/sdf_MetronBook24"
+ text_proportion 0.65
  ignorepointer 1
 }
  }
@@ -294,6 +301,7 @@ TextWidgetClass GRZStatus
  hexactsize 0
  vexactsize 0
  font "gui/fonts/sdf_MetronBook24"
+ text_proportion 0.65
  ignorepointer 1
 }
  }
