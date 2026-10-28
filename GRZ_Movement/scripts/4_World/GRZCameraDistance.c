@@ -2,7 +2,6 @@ modded class DayZPlayerImplement
 {
     private bool m_GRZWasProne;
     private float m_GRZRecoveryStart = -1;
-    private float m_GRZHeldDistance = -1;
 
     float GRZMovementCameraDistance(float nativeDistance)
     {
@@ -15,7 +14,6 @@ modded class DayZPlayerImplement
         {
             m_GRZWasProne = true;
             m_GRZRecoveryStart = -1;
-            m_GRZHeldDistance = -1;
             return nativeDistance;
         }
         if (m_GRZWasProne)
@@ -27,16 +25,11 @@ modded class DayZPlayerImplement
         if (GetCurrentCommandID() != DayZPlayerConstants.COMMANDID_MOVE)
         {
             m_GRZRecoveryStart = -1;
-            m_GRZHeldDistance = -1;
             return nativeDistance;
         }
-        if (GRZHasHeldEyeZoom())
-        {
-            if (m_GRZHeldDistance < 0)
-                m_GRZHeldDistance = nativeDistance;
-            return m_GRZHeldDistance;
-        }
-        m_GRZHeldDistance = -1;
+        HumanInputController controls = GetInputController();
+        if (controls && (controls.IsZoom() || controls.IsZoomToggle() || controls.WeaponADS()))
+            return nativeDistance;
         if (standing && m_GRZRecoveryStart >= 0)
         {
             float elapsed = now - m_GRZRecoveryStart;
