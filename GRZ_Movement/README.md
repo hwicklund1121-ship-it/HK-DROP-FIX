@@ -1,9 +1,15 @@
-# GRZ Movement 0.28 — smaller softer settings text
+# GRZ Movement 0.29 — reference FOV and distance ranges
 
 
-This build rolls back the broken v0.26 native-row insertion. Settings UI runtime files are restored byte-for-byte from v0.25: the separate GUNRUNNERZ FOV heading, translucent rows and custom sliders with white fill. The requested exact native appearance remains unfinished. Existing saved preferences and all movement/zoom/camera resources are retained.
+Settings > Game > GUNRUNNERZ FOV now uses the limits shown in the supplied references:
 
-Replace the PBO rather than loading both versions. Open Settings > Game and confirm the three rows no longer overlap. Use normal Apply/Reset/Defaults/Back; saved preferences remain in `$profile:GRZMovementCamera.json`. In-game layout validation is still required.
+- FOV: **0.5200–1.5599**, step 0.0001.
+- View distance: **500–2,000m**.
+- Object view distance: **500–2,000m**, capped to view distance.
+
+Values outside the new limits in existing saved preferences are clamped on load. Apply saves the updated values to `$profile:GRZMovementCamera.json`. The existing custom UI and smaller softer text are retained; the broken native-row insertion remains removed. Replace the old PBO rather than loading both.
+
+The range determines the close/wide FOV endpoints. The camera boom, stance pivots, player model, aspect ratio and weapon posture also affect framing, so matching these values alone does not verify an identical camera composition. Gameplay and World camera scripts are unchanged. Test both FOV endpoints, distance endpoints, held zoom and save/rejoin in-game.
 
 Fresh movement-response implementation for DayZ 1.30. Uses 0.06 sprint smoothing, 100 acceleration limit, 0.14 strafe smoothing, a 17-degree turn threshold, 6.5 lean speed and unrestricted water movement speed. Initializes through the native implementation first. No animation assets from LUGU are included or changed.
 
@@ -74,3 +80,5 @@ Version 0.26 removes the custom layout, font/color overrides, fills and marker c
 Version 0.27 restores the complete v0.25 runtime payload following the user screenshot showing all three native-cloned rows stacked in v0.26. This is a regression rollback, not a claim that native styling is finished.
 
 Version 0.28 addresses the supplied screenshot of oversized bright text: removes automatic native text-bounds sizing; fixes heading proportion at 0.65 and body/value proportions at 0.55; disables bold, italic, outline and shadow and sets text to RGB 210/210/210. The font resource remains the existing DayZ MetronBook font. White fill opacity is reduced to 30%. Existing placement, ranges, persistence and gameplay resources are unchanged. These are visual tuning values, not a verified exact native match; check in-game at the same UI scale.
+
+Version 0.29 changes only preference validation and UI slider ranges to FOV 0.52–1.5599 and distances 500–2000 from the supplied screenshots. FOV slider precision is 0.0001. Existing default FOV 1.0 and distances 2000 remain valid. Historical notes above describe older builds.

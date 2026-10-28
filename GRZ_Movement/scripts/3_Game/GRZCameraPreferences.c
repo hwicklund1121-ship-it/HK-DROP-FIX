@@ -19,8 +19,8 @@ class GRZCameraPreferences
 
     void Validate()
     {
-        FieldOfView = Math.Clamp(FieldOfView, 0.9, 2.0);
-        ViewDistance = Math.Clamp(ViewDistance, 500, 5000);
+        FieldOfView = Math.Clamp(FieldOfView, 0.52, 1.5599);
+        ViewDistance = Math.Clamp(ViewDistance, 500, 2000);
         ObjectDistance = Math.Clamp(ObjectDistance, 500, ViewDistance);
     }
 
