@@ -1,4 +1,4 @@
-# GRZ Movement 0.24 — native-style rows and slider fill
+# GRZ Movement 0.25 — typography, compact spacing and full-width fill
 
 
 Open **Settings > Game**, then look for the **GunRunnerZ FOV** section replacing the original **Camera** category. The sliders are inside the normal Settings screen; there is no F7 menu. Use the normal Settings **Apply**, **Reset**, **Defaults**, and **Back** controls. Values are not previewed before Apply; leaving without applying discards edits.
@@ -74,3 +74,5 @@ Version 0.22 addresses screenshot overlap by finding the complete native Camera 
 Version 0.23 adds explicit drawable ImageWidget backgrounds: 65% black behind the three slider rows and 85% black behind the heading. Uses a procedural solid-white engine texture tinted black, not external artwork. Backgrounds ignore pointer input and sit behind labels/sliders. Script resources, layout positions and slider behavior are unchanged. The previous PanelWidget color alone did not render the requested backing in the supplied screenshot. Appearance requires an in-game check.
 
 Version 0.24 lightens the single translucent row backing to 35% black and removes redundant container shading/borders. Uses a plain opaque-black heading, larger heading/row text and white slider fill that tracks the normalized value between min/max. Fill and marker update together on loading, dragging, reset and defaults; both ignore pointer input. Value labels get a thin black outline for readability over fill. Range, persistence, movement and camera scripts are unchanged. Visual match and UI interaction still need in-game verification.
+
+Version 0.25 capitalizes GUNRUNNERZ FOV, matches text sizing/bold/italic/outline to available native Camera heading/label widgets and removes the unused fifth row. The category is now exactly four row-heights: heading plus three settings; row backing reaches the section bottom. Status text is a hidden error overlay. Slider fill now spans normalized width 0..1 and full track height, eliminating the previous 1.2% edge inset. Gameplay and saved setting logic are unchanged. Native typography lookup and visual spacing still require in-game confirmation.

@@ -10,8 +10,8 @@ PanelWidgetClass GRZCameraRoot
  {
 ImageWidgetClass GRZRowsBackground
 {
- position 0 0.20
- size 1 0.59
+ position 0 0.25
+ size 1 0.75
  hexactpos 0
  vexactpos 0
  hexactsize 0
@@ -25,7 +25,7 @@ ImageWidgetClass GRZRowsBackground
 PanelWidgetClass GRZHeading
 {
  position 0 0
- size 1 0.18
+ size 1 0.25
  hexactpos 0
  vexactpos 0
  hexactsize 0
@@ -53,7 +53,7 @@ TextWidgetClass GRZSectionTitle
  vexactpos 0
  hexactsize 0
  vexactsize 0
- text "GunRunnerZ FOV"
+ text "GUNRUNNERZ FOV"
  font "gui/fonts/sdf_MetronBook24"
  text_proportion 0.75
  ignorepointer 1
@@ -62,8 +62,8 @@ TextWidgetClass GRZSectionTitle
 }
 PanelWidgetClass GRZFovRow
 {
- position 0 0.20
- size 1 0.19
+ position 0 0.25
+ size 1 0.25
  hexactpos 0
  vexactpos 0
  hexactsize 0
@@ -118,8 +118,8 @@ SliderWidgetClass GRZFov
  {
 ImageWidgetClass GRZFovFill
 {
- position 0.012 0.12
- size 0 0.76
+ position 0 0
+ size 0 1
  hexactpos 0
  vexactpos 0
  hexactsize 0
@@ -160,8 +160,8 @@ TextWidgetClass GRZFovValue
 }
 PanelWidgetClass GRZViewRow
 {
- position 0 0.40
- size 1 0.19
+ position 0 0.50
+ size 1 0.25
  hexactpos 0
  vexactpos 0
  hexactsize 0
@@ -216,8 +216,8 @@ SliderWidgetClass GRZView
  {
 ImageWidgetClass GRZViewFill
 {
- position 0.012 0.12
- size 0 0.76
+ position 0 0
+ size 0 1
  hexactpos 0
  vexactpos 0
  hexactsize 0
@@ -258,8 +258,8 @@ TextWidgetClass GRZViewValue
 }
 PanelWidgetClass GRZObjectsRow
 {
- position 0 0.60
- size 1 0.19
+ position 0 0.75
+ size 1 0.25
  hexactpos 0
  vexactpos 0
  hexactsize 0
@@ -314,8 +314,8 @@ SliderWidgetClass GRZObjects
  {
 ImageWidgetClass GRZObjectsFill
 {
- position 0.012 0.12
- size 0 0.76
+ position 0 0
+ size 0 1
  hexactpos 0
  vexactpos 0
  hexactsize 0
@@ -356,7 +356,8 @@ TextWidgetClass GRZObjectsValue
 }
 TextWidgetClass GRZStatus
 {
- position 0.015 0.84
+ visible 0
+ position 0.015 0.85
  size 0.97 0.15
  hexactpos 0
  vexactpos 0

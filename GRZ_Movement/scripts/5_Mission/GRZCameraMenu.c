@@ -58,7 +58,7 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
         RefreshValues();
         TextWidget heading = TextWidget.Cast(m_Root.FindAnyWidget("GRZSectionTitle"));
         heading.SetFlags(WidgetFlags.CENTER | WidgetFlags.VCENTER);
-        heading.SetTextProportion(1.0);
+        heading.SetTextProportion(0.8);
         m_Root.SetHandler(this);
         m_Menu = menu;
         CaptureSavedValues();
@@ -82,7 +82,35 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
         float fraction = (slider.GetCurrent() - slider.GetMin()) / (slider.GetMax() - slider.GetMin());
         fraction = Math.Clamp(fraction, 0, 1);
         marker.SetPos(fraction * 0.988, 0.10);
-        fill.SetSize(fraction * 0.976, 0.76);
+        fill.SetSize(fraction, 1.0);
+    }
+
+    private void MatchText(TextWidget source, TextWidget destination)
+    {
+        if (!source || !destination)
+            return;
+        destination.SetBold(source.GetBold());
+        destination.SetItalic(source.GetItalic());
+        destination.SetOutline(source.GetOutlineSize(), source.GetOutlineColor());
+        int textWidth, textHeight;
+        float width, height;
+        source.GetTextSize(textWidth, textHeight);
+        destination.GetScreenSize(width, height);
+        if (height > 0 && textHeight > 0)
+            destination.SetTextProportion(Math.Clamp(textHeight / height, 0.1, 1.0));
+        else
+            destination.SetTextProportion(source.GetTextProportion());
+    }
+
+    void MatchNativeTypography(TextWidget heading, TextWidget label)
+    {
+        MatchText(heading, TextWidget.Cast(m_Root.FindAnyWidget("GRZSectionTitle")));
+        MatchText(label, TextWidget.Cast(m_Root.FindAnyWidget("GRZFovLabel")));
+        MatchText(label, TextWidget.Cast(m_Root.FindAnyWidget("GRZViewLabel")));
+        MatchText(label, TextWidget.Cast(m_Root.FindAnyWidget("GRZObjectsLabel")));
+        MatchText(label, m_FovValue);
+        MatchText(label, m_ViewValue);
+        MatchText(label, m_ObjectsValue);
     }
 
     void SetSectionOrder(int order)
@@ -127,12 +155,13 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
         string error;
         if (!GRZCameraPreferences.SaveAndApply(preferences, error))
         {
+            m_Status.Show(true);
             m_Status.SetText("Could not save GRZ settings. Check your DayZ profile folder.");
             Print("[GRZ SETTINGS] " + error);
             return false;
         }
         CaptureSavedValues();
-        m_Status.SetText("GRZ camera settings saved.");
+        m_Status.Show(false);
         return true;
     }
 
@@ -156,6 +185,24 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
 modded class OptionsMenuGame
 {
     private ref GRZCameraSettingsPanel m_GRZCameraPanel;
+
+    private TextWidget GRZFindText(Widget root, Widget excluded)
+    {
+        if (!root || root == excluded)
+            return null;
+        TextWidget text = TextWidget.Cast(root);
+        if (text)
+            return text;
+        Widget child = root.GetChildren();
+        while (child)
+        {
+            TextWidget found = GRZFindText(child, excluded);
+            if (found)
+                return found;
+            child = child.GetSibling();
+        }
+        return null;
+    }
 
     void OptionsMenuGame(Widget parent, Widget details_root, GameOptions options, OptionsMenu menu)
     {
@@ -186,6 +233,8 @@ modded class OptionsMenuGame
             cameraSection.GetScreenSize(sectionWidth, sectionHeight);
             if (rowHeight < 20 || rowHeight > 70)
                 rowHeight = 32;
+            TextWidget nativeLabel = GRZFindText(cameraRow, nativeFov);
+            TextWidget nativeHeading = GRZFindText(cameraSection, cameraRow);
             Widget originalChild = cameraSection.GetChildren();
             while (originalChild)
             {
@@ -193,10 +242,11 @@ modded class OptionsMenuGame
                 originalChild = originalChild.GetSibling();
             }
             nativeFov.Enable(false);
-            cameraSection.SetScreenSize(sectionWidth, rowHeight * 5);
+            cameraSection.SetScreenSize(sectionWidth, rowHeight * 4);
             m_GRZCameraPanel = new GRZCameraSettingsPanel(cameraSection, menu);
             cameraSection.Update();
             settingsRoot.Update();
+            m_GRZCameraPanel.MatchNativeTypography(nativeHeading, nativeLabel);
             Print("[GRZ SETTINGS] Replaced native Camera category: " + cameraSection.GetName());
         }
     }
