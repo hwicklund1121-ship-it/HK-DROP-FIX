@@ -1,15 +1,9 @@
-# GRZ Movement 0.26 — native DayZ rows and sliders
+# GRZ Movement 0.27 — restore non-overlapping settings layout
 
 
-Open **Settings > Game > GUNRUNNERZ FOV**. This replaces the native Camera heading text while retaining its stock heading/row widgets. All three controls use DayZ's original slider layout, fill, font, color and hover styling. The distance rows reuse the installed game's original FOV row layout. No custom UI artwork/layout is packaged.
+This build rolls back the broken v0.26 native-row insertion. Settings UI runtime files are restored byte-for-byte from v0.25: the separate GUNRUNNERZ FOV heading, translucent rows and custom sliders with white fill. The requested exact native appearance remains unfinished. Existing saved preferences and all movement/zoom/camera resources are retained.
 
-- Field of view: 0.900–2.000 (DayZ camera units/radians, not degrees).
-- View distance: 500–5,000 metres.
-- Object view distance: 500–5,000 metres, capped to view distance.
-
-Use normal Settings Apply, Reset, Defaults and Back. Sliders display like the original DayZ sliders, without the earlier custom numeric overlays. Values are not previewed before Apply; leaving without applying discards edits. Applying writes all three preferences to `$profile:GRZMovementCamera.json`; saved preferences load at mission start. Initial distance defaults are 2,000m, not a readback of native settings. Remove that file and restart to restore game-managed settings.
-
-This build targets PC mouse/keyboard UI. Dynamic row insertion, scaling, controller navigation, Apply/Reset and save/rejoin still require in-game testing. Higher distances can reduce FPS; engine, weather and server limits may restrict actual visibility. Movement, zoom corrections and recovery camera scripts are unchanged.
+Replace the PBO rather than loading both versions. Open Settings > Game and confirm the three rows no longer overlap. Use normal Apply/Reset/Defaults/Back; saved preferences remain in `$profile:GRZMovementCamera.json`. In-game layout validation is still required.
 
 Fresh movement-response implementation for DayZ 1.30. Uses 0.06 sprint smoothing, 100 acceleration limit, 0.14 strafe smoothing, a 17-degree turn threshold, 6.5 lean speed and unrestricted water movement speed. Initializes through the native implementation first. No animation assets from LUGU are included or changed.
 
@@ -76,3 +70,5 @@ Version 0.24 lightens the single translucent row backing to 35% black and remove
 Version 0.25 capitalizes GUNRUNNERZ FOV, matches text sizing/bold/italic/outline to available native Camera heading/label widgets and removes the unused fifth row. The category is now exactly four row-heights: heading plus three settings; row backing reaches the section bottom. Status text is a hidden error overlay. Slider fill now spans normalized width 0..1 and full track height, eliminating the previous 1.2% edge inset. Gameplay and saved setting logic are unchanged. Native typography lookup and visual spacing still require in-game confirmation.
 
 Version 0.26 removes the custom layout, font/color overrides, fills and marker code. Retains the native Camera heading/row and relabels the heading GUNRUNNERZ FOV; creates the two distance rows from the installed DayZ game_tab layout and uses the native OptionSelectorSlider for all three controls. Labels, brightness, background, borders, hover and fill therefore come from the installed game resources. No native layout is bundled in the PBO. Slider values use their existing ranges/preferences but are displayed like vanilla sliders rather than custom number overlays. The category grows by two native row heights. All prior World and Game scripts are unchanged. Dynamic row reparenting, spacing, input and save/rejoin require in-game verification. Earlier UI implementation notes are superseded.
+
+Version 0.27 restores the complete v0.25 runtime payload following the user screenshot showing all three native-cloned rows stacked in v0.26. This is a regression rollback, not a claim that native styling is finished.
