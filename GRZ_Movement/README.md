@@ -1,4 +1,4 @@
-# GRZ Movement 0.16 — organized response preset
+# GRZ Movement 0.17 — slightly slower crouched movement
 
 Fresh movement-response implementation for DayZ 1.30. Uses 0.06 sprint smoothing, 100 acceleration limit, 0.14 strafe smoothing, a 17-degree turn threshold, 6.5 lean speed and unrestricted water movement speed. Initializes through the native implementation first. No animation assets from LUGU are included or changed.
 
@@ -45,3 +45,5 @@ Version 0.14 uses the uploaded 00-33-20 trace: 25 eye=SHALLOW samples occurred w
 Version 0.15 changes only GRZMovement.c runtime tuning: sprint response span 0.01→0.06, maximum response change 200→100, jog/sprint direction-filter spans 0.10→0.14. This is a mild easing preset, not camera smoothing or animation replacement. Turning thresholds, heading limits, leaning, zoom, bob removal and recovery camera logic are unchanged. Compare starts/stops, alternating A/D, sprint turns and the LUGU sequence on flat/sloped ground. Engine timing/filter parameters are not a promise of exact input delay. Feel and LUGU behavior require in-game testing; v0.14 remains available for comparison.
 
 Version 0.16 organizes the v0.15 movement settings into named preset constants and separate response, turning and water-configuration functions. This is a readability/maintenance refactor, not a new provenance claim or a copyright workaround. All parameter assignments retain their v0.15 values; other runtime resources are unchanged. DayZ API/class names necessarily remain as required by the engine. The development references described in PROVENANCE.md still apply. Runtime compilation must be verified in DayZ.
+
+Version 0.17 adds GRZCrouchSpeed.c, scaling requested movement speed to 95% only while settled in crouch or raised crouch. Uses ONE_FRAME override and preserves the inherited command-handler result. Skips stance transitions, roll, on-back recovery, fighting and non-movement commands. Standing, prone, animation playback and camera code are unchanged. The 95% input scaling is not a measured 5% world-speed reduction; engine animation blending may differ. Test crouched walk/run with and without a weapon, standing/prone speed, transition responsiveness, multiplayer movement and LUGU recovery. Runtime compilation and actual speed require in-game validation.
