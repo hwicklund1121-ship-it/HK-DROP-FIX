@@ -14,7 +14,7 @@ modded class DayZPlayerImplement
             return zoom;
         HumanMovementState state = new HumanMovementState();
         GetMovementState(state);
-        if (state.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_ERECT)
+        if (state.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_ERECT || state.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_CROUCH)
             return ECameraZoomType.NORMAL;
         return zoom;
     }

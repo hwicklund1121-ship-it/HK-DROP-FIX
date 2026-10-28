@@ -21,6 +21,6 @@ modded class DayZPlayerCamera3rdPerson
         float speed;
         vector direction;
         m_pInput.GetMovement(speed, direction);
-        Print("[GRZZOOM] version=0.13 t=" + GetGame().GetTime().ToString() + " camera=" + ClassName() + " eye=" + m_pPlayer.GetEyeZoomLevel().ToString() + " fov=" + pOutResult.m_fFovAbsolute.ToString() + " multiplier=" + pOutResult.m_fFovMultiplier.ToString() + " distance=" + pOutResult.m_fDistance.ToString() + " pivot=" + pOutResult.m_CameraTM[3].ToString() + " stance=" + state.m_iStanceIdx.ToString() + " movement=" + state.m_iMovement.ToString() + " requested_speed=" + speed.ToString());
+        Print("[GRZZOOM] version=0.14 t=" + GetGame().GetTime().ToString() + " camera=" + ClassName() + " eye=" + m_pPlayer.GetEyeZoomLevel().ToString() + " fov=" + pOutResult.m_fFovAbsolute.ToString() + " multiplier=" + pOutResult.m_fFovMultiplier.ToString() + " distance=" + pOutResult.m_fDistance.ToString() + " pivot=" + pOutResult.m_CameraTM[3].ToString() + " stance=" + state.m_iStanceIdx.ToString() + " movement=" + state.m_iMovement.ToString() + " requested_speed=" + speed.ToString());
     }
 }
