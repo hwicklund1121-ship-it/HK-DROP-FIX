@@ -1,44 +1,28 @@
-// Preserve ordinary held eye zoom through standing/crouching transitions.
-// Camera FOV values, smoothing and distances remain native.
 modded class DayZPlayerImplement
 {
-    override void HandleView()
+    bool GRZHasHeldEyeZoom()
     {
-        super.HandleView();
-
-        if (GetGame().IsDedicatedServer() || GetGame().GetPlayer() != this)
-            return;
         if (!IsAlive() || IsFighting() || GetCurrentCommandID() != DayZPlayerConstants.COMMANDID_MOVE)
-            return;
-
+            return false;
         HumanInputController controls = GetInputController();
         if (!controls || controls.WeaponADS() || m_CameraOptics || m_CameraIronsight)
-            return;
+            return false;
         if (!controls.IsZoom() && !controls.IsZoomToggle())
-            return;
+            return false;
+        HumanMovementState state = new HumanMovementState();
+        GetMovementState(state);
+        if (state.m_iStanceIdx != DayZPlayerConstants.STANCEIDX_ERECT && state.m_iStanceIdx != DayZPlayerConstants.STANCEIDX_RAISEDERECT && state.m_iStanceIdx != DayZPlayerConstants.STANCEIDX_CROUCH && state.m_iStanceIdx != DayZPlayerConstants.STANCEIDX_RAISEDCROUCH)
+            return false;
+        float speed;
+        vector direction;
+        controls.GetMovement(speed, direction);
+        return speed < 3;
+    }
 
-        HumanMovementState zoomState = new HumanMovementState();
-        GetMovementState(zoomState);
-        switch (zoomState.m_iStanceIdx)
-        {
-            case DayZPlayerConstants.STANCEIDX_ERECT:
-            case DayZPlayerConstants.STANCEIDX_RAISEDERECT:
-            case DayZPlayerConstants.STANCEIDX_CROUCH:
-            case DayZPlayerConstants.STANCEIDX_RAISEDCROUCH:
-                break;
-            default:
-                return;
-        }
-
-        // Preserve the native sprint zoom policy. No saved zoom state survives
-        // button release; the inherited handler decides it anew every frame.
-        float requestedSpeed;
-        vector requestedDirection;
-        controls.GetMovement(requestedSpeed, requestedDirection);
-        if (requestedSpeed >= 3)
-            return;
-
-        if (m_CameraEyeZoomLevel == ECameraZoomType.NONE)
-            m_CameraEyeZoomLevel = ECameraZoomType.NORMAL;
+    override int GetEyeZoomLevel()
+    {
+        if (GRZHasHeldEyeZoom())
+            return ECameraZoomType.NORMAL;
+        return super.GetEyeZoomLevel();
     }
 }
