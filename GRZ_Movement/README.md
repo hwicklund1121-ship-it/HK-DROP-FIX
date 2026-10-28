@@ -1,4 +1,4 @@
-# GRZ Movement 0.22 — replace duplicate Camera category
+# GRZ Movement 0.23 — translucent black settings background
 
 
 Open **Settings > Game**, then look for the **GunRunnerZ FOV** section replacing the original **Camera** category. The sliders are inside the normal Settings screen; there is no F7 menu. Use the normal Settings **Apply**, **Reset**, **Defaults**, and **Back** controls. Values are not previewed before Apply; leaving without applying discards edits.
@@ -70,3 +70,5 @@ Version 0.20 adds original Game/Mission scripts and a native-widget layout embed
 Version 0.21 labels the enhanced slider GunRunnerZ FOV, adds a separate GunRunnerZ FOV heading and three compact dark rows directly below the native Camera row, and adds white track borders plus a white position marker to every slider. Markers follow loaded, edited, reset and default values and ignore pointer events. This reuses no GunRunnerZ artwork or layout. PC hierarchy assumptions and visual scaling require in-game testing. Existing 3_Game preferences and all 4_World resources are unchanged.
 
 Version 0.22 addresses screenshot overlap by finding the complete native Camera category below the game-settings stack, hiding its original heading/row and fitting the GRZ panel into that host. Uses an opaque black heading, translucent black setting rows and fixed-size white text. White slider markers remain. The category host name is logged for troubleshooting. Placement/sizing must be confirmed in-game; if the category is not identifiable the original UI is retained. All rendering preferences and World scripts are unchanged.
+
+Version 0.23 adds explicit drawable ImageWidget backgrounds: 65% black behind the three slider rows and 85% black behind the heading. Uses a procedural solid-white engine texture tinted black, not external artwork. Backgrounds ignore pointer input and sit behind labels/sliders. Script resources, layout positions and slider behavior are unchanged. The previous PanelWidget color alone did not render the requested backing in the supplied screenshot. Appearance requires an in-game check.

@@ -8,6 +8,20 @@ PanelWidgetClass GRZCameraRoot
  vexactsize 0
 
  {
+ImageWidgetClass GRZRowsBackground
+{
+ position 0 0.20
+ size 1 0.59
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0 0 0 0.65
+ blend 1
+ ignorepointer 1
+ image0 "#(argb,8,8,3)color(1,1,1,1,co)"
+ mode blend
+}
 PanelWidgetClass GRZHeading
 {
  position 0 0
@@ -19,6 +33,20 @@ PanelWidgetClass GRZHeading
  style Colorable
  color 0 0 0 1
  {
+ImageWidgetClass GRZHeadingBackground
+{
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 0 0 0 0.85
+ blend 1
+ ignorepointer 1
+ image0 "#(argb,8,8,3)color(1,1,1,1,co)"
+ mode blend
+}
 TextWidgetClass GRZSectionTitle
 {
  position 0 0.05
