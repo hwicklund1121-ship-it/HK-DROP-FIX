@@ -1,3 +1,5 @@
+// Client camera/UI only. Dedicated servers use their native implementations.
+#ifndef SERVER
 // Original GRZ panel embedded in the native Settings > Game tab.
 class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
 {
@@ -295,3 +297,5 @@ modded class MissionGameplay
         GRZCameraPreferences.ApplyDistances();
     }
 }
+
+#endif

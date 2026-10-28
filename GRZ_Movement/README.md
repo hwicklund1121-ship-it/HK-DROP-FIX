@@ -1,4 +1,4 @@
-# GRZ Movement 0.31 — free movement stamina, paid jump and melee
+# GRZ Movement 0.32 — dedicated-server camera isolation
 
 
 Settings > Game > GUNRUNNERZ FOV now uses the limits shown in the supplied references:
@@ -88,3 +88,7 @@ Version 0.30 adds GRZNoObjectWeaponLift.c. Replaces the owning client's CheckLif
 Version 0.31 adds GRZSelectiveStamina.c. Continuous negative locomotion stamina deltas are suppressed. Only JUMP, MELEE_LIGHT and MELEE_HEAVY depletion modifiers reach the native action-cost handler. Thus light/heavy punches and other melee attacks, including weapon melee, retain native costs and cooldowns; sprint/swim/ladder movement, vault/climb, roll, evade, breath holding and pushing do not drain stamina. The stamina pool is not continuously refilled. Jump/heavy-melee thresholds remain native; free consumers bypass only stamina thresholds (other action restrictions remain). Carried weight no longer reduces the stamina cap, which follows the configured stamina maximum. Positive native recovery is retained, but sprint may hold the current value rather than refill it. Existing native sync/replay/update logic remains in use.
 
 Install the same GRZ build on the server and clients. Disable separate unlimited-stamina mods and any global stamina-disable setting; these can suppress punch/jump costs or override this policy. Test sprinting until after a jump, light/heavy melee depletion, repeated jumps to exhaustion, continued sprint at empty stamina, native recovery, breath holding, vault/roll and high carried weight. Actual costs still follow server gameplay settings. Multiplayer/runtime verification is required. All v0.30 runtime resources remain byte-identical.
+
+Version 0.32 excludes GRZ camera, FOV preferences and Settings UI overrides from SERVER builds. Dedicated servers retain movement tuning, running lean and no-object-lift scripts, with native camera implementations. Client camera callbacks have early game/player/input/result guards. No camera tuning values were changed. This is targeted hardening, not proof of the uploaded crash cause. See SERVER-CRASH-REVIEW.md. Replace the old GRZ PBO on server/clients; do not leave an older or repacked duplicate loaded. Existing signatures need replacement/re-signing by the server owner if signature enforcement is enabled. A controlled server reproduction is required.
+
+As additionally requested, version 0.32 removes GRZSelectiveStamina.c entirely. GRZ no longer changes stamina drain, regeneration, capacity or consumer thresholds. Standard stamina applies subject to server settings/other installed mods.

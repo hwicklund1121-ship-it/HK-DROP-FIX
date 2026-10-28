@@ -1,3 +1,5 @@
+// Client camera/UI only. Dedicated servers use their native implementations.
+#ifndef SERVER
 // Remove sprint's reduced eye-zoom level. Native zoom activation/release and
 // FOV smoothing remain in control; no extra raw-button check is needed.
 modded class DayZPlayerImplement
@@ -5,6 +7,8 @@ modded class DayZPlayerImplement
     override int GetEyeZoomLevel()
     {
         int zoom = super.GetEyeZoomLevel();
+        if (!GetGame() || GetGame().IsDedicatedServer())
+            return zoom;
         if (zoom != ECameraZoomType.SHALLOW || !IsAlive())
             return zoom;
         if (GetCurrentCommandID() != DayZPlayerConstants.COMMANDID_MOVE)
@@ -30,6 +34,8 @@ modded class DayZPlayerCamera3rdPersonErcSpr
 
     override void OnUpdate(float pDt, out DayZPlayerCameraResult pOutResult)
     {
+        if (!m_pPlayer || !m_pInput || !pOutResult)
+            return;
         // Standing and sprinting must use the same framing while eye zoom is
         // active: matching distance alone leaves a pivot/shoulder shift.
         bool eyeZoom = m_pPlayer.GetEyeZoomLevel() != ECameraZoomType.NONE;
@@ -46,3 +52,5 @@ modded class DayZPlayerCamera3rdPersonErcSpr
         super.OnUpdate(pDt, pOutResult);
     }
 }
+
+#endif

@@ -1,9 +1,13 @@
+// Client camera/UI only. Dedicated servers use their native implementations.
+#ifndef SERVER
 // GRZ legacy camera policy. Let DayZ resolve special cameras first, then adjust
 // only ordinary third-person movement cameras. No external zoom code or assets.
 modded class DayZPlayerImplement
 {
     override int CameraHandler(int pCameraMode)
     {
+        if (!GetGame() || GetGame().IsDedicatedServer())
+            return pCameraMode;
         int selectedCamera = super.CameraHandler(pCameraMode);
 
         // These conditions leave vehicles, first person, ADS, unconsciousness,
@@ -45,3 +49,5 @@ modded class DayZPlayerImplement
         return selectedCamera;
     }
 }
+
+#endif

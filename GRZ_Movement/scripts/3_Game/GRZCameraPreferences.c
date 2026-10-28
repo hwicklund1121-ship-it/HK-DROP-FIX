@@ -1,3 +1,5 @@
+// Client camera/UI only. Dedicated servers use their native implementations.
+#ifndef SERVER
 // Client-only preferences. No server data or third-party UI resources.
 class GRZCameraPreferences
 {
@@ -74,3 +76,5 @@ modded class DayZGame
         return super.GetUserFOV();
     }
 }
+
+#endif

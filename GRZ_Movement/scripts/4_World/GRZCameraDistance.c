@@ -1,3 +1,5 @@
+// Client camera/UI only. Dedicated servers use their native implementations.
+#ifndef SERVER
 modded class DayZPlayerImplement
 {
     private float m_GRZProneDistance = -1;
@@ -36,6 +38,8 @@ modded class DayZPlayerCamera3rdPerson
 {
     override void StdFovUpdate(float pDt, out DayZPlayerCameraResult pOutResult)
     {
+        if (!m_pPlayer || !m_pInput || !pOutResult)
+            return;
         super.StdFovUpdate(pDt, pOutResult);
         DayZPlayerImplement player = DayZPlayerImplement.Cast(m_pPlayer);
         if (!player)
@@ -52,3 +56,5 @@ modded class DayZPlayerCamera3rdPerson
         pOutResult.m_fDistance = player.GRZMovementCameraDistance(pOutResult.m_fDistance, false);
     }
 }
+
+#endif
