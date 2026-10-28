@@ -6,6 +6,9 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
     private float m_SavedFov;
     private float m_SavedView;
     private float m_SavedObjects;
+    private Widget m_FovMarker;
+    private Widget m_ViewMarker;
+    private Widget m_ObjectsMarker;
     private SliderWidget m_Fov;
     private SliderWidget m_View;
     private SliderWidget m_Objects;
@@ -24,6 +27,12 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
         m_ViewValue = TextWidget.Cast(m_Root.FindAnyWidget("GRZViewValue"));
         m_ObjectsValue = TextWidget.Cast(m_Root.FindAnyWidget("GRZObjectsValue"));
         m_Status = TextWidget.Cast(m_Root.FindAnyWidget("GRZStatus"));
+        m_FovMarker = m_Root.FindAnyWidget("GRZFovMarker");
+        m_ViewMarker = m_Root.FindAnyWidget("GRZViewMarker");
+        m_ObjectsMarker = m_Root.FindAnyWidget("GRZObjectsMarker");
+        m_FovMarker.SetFlags(WidgetFlags.IGNOREPOINTER);
+        m_ViewMarker.SetFlags(WidgetFlags.IGNOREPOINTER);
+        m_ObjectsMarker.SetFlags(WidgetFlags.IGNOREPOINTER);
         m_Fov.SetMinMax(0.9, 2.0);
         m_Fov.SetStep(0.001);
         m_View.SetMinMax(500, 5000);
@@ -45,9 +54,23 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
         // Objects cannot render farther than the overall view distance.
         if (m_Objects.GetCurrent() > m_View.GetCurrent())
             m_Objects.SetCurrent(m_View.GetCurrent());
+        UpdateMarker(m_Fov, m_FovMarker);
+        UpdateMarker(m_View, m_ViewMarker);
+        UpdateMarker(m_Objects, m_ObjectsMarker);
         m_FovValue.SetText(m_Fov.GetCurrent().ToString());
         m_ViewValue.SetText(Math.Round(m_View.GetCurrent()).ToString() + " m");
         m_ObjectsValue.SetText(Math.Round(m_Objects.GetCurrent()).ToString() + " m");
+    }
+
+    private void UpdateMarker(SliderWidget slider, Widget marker)
+    {
+        float fraction = (slider.GetCurrent() - slider.GetMin()) / (slider.GetMax() - slider.GetMin());
+        marker.SetPos(Math.Clamp(fraction, 0, 1) * 0.988, 0.10);
+    }
+
+    void SetSectionOrder(int order)
+    {
+        m_Root.SetSort(order);
     }
 
     override bool OnChange(Widget w, int x, int y, bool finished)
@@ -120,15 +143,17 @@ modded class OptionsMenuGame
     void OptionsMenuGame(Widget parent, Widget details_root, GameOptions options, OptionsMenu menu)
     {
         GRZCameraPreferences.Load();
-        Widget settings = m_Root.FindAnyWidget("game_settings_root");
-        if (settings)
+        Widget nativeFov = m_Root.FindAnyWidget("fov_setting_option");
+        if (nativeFov && nativeFov.GetParent() && nativeFov.GetParent().GetParent())
         {
-            m_GRZCameraPanel = new GRZCameraSettingsPanel(settings, menu);
-            settings.Update();
-            // GRZ's enhanced slider replaces the standard clamped FOV control.
-            Widget nativeFov = m_Root.FindAnyWidget("fov_setting_option");
-            if (nativeFov)
-                nativeFov.Enable(false);
+            // Add an independently titled section immediately after the native
+            // Camera FOV row, retaining the existing Camera heading and row.
+            Widget cameraRow = nativeFov.GetParent();
+            Widget cameraSection = cameraRow.GetParent();
+            m_GRZCameraPanel = new GRZCameraSettingsPanel(cameraSection, menu);
+            m_GRZCameraPanel.SetSectionOrder(cameraRow.GetSort() + 1);
+            nativeFov.Enable(false);
+            cameraSection.Update();
         }
     }
 

@@ -8,4 +8,4 @@ The LUGU addon remains a separate optional installation. Permission to use it do
 
 Distribute the standalone GRZ ZIP, not an archive of the historical HK-DROP-FIX repository: that repository contains third-party inputs and earlier experimental packages which are outside this GRZ release.
 
-Version 0.20 camera settings use a newly written normalized-coordinate layout with native DayZ widgets/font references and newly written preference/menu code. GunRunnerZ supplied the visual feature reference only; its code, layout, artwork and branding are not included.
+Version 0.20 camera settings use a newly written normalized-coordinate layout with native DayZ widgets/font references and newly written preference/menu code. GunRunnerZ supplied the visual feature reference only; its code, layout and artwork are not included. The user later requested the text label GunRunnerZ FOV; that label is included in version 0.21. No trademark clearance is claimed.
