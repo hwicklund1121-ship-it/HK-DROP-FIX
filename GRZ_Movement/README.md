@@ -1,8 +1,8 @@
-# GRZ Movement 0.2 — movement and legacy camera baseline
+# GRZ Movement 0.3 — running lean
 
 Fresh movement-response implementation for DayZ 1.30. Uses the supplied LWP response values: 0.01 sprint smoothing, 200 acceleration limit, 0.1 strafe smoothing, 17-degree turn threshold, 6.5 lean speed and unrestricted water movement speed. Initializes through the native implementation first. No animation assets from LUGU are included or changed.
 
-This baseline matches movement response settings, not every behavior of the legacy movement PBO. Native sprint/lean restrictions, stamina, weapon sway, weapon lifting, item stance rules and stance callbacks remain native. The built-in legacy camera policy selects raised stance cameras directly during transitions and restores sprint-camera selection from the movement index. It uses native camera FOV values and your FOV setting; it does not set a fixed FOV angle or force zoom input. Exact equivalence to a third-party FOV mod and held-zoom persistence are not established. In particular, it does not abort weapon events or refresh weapon animations during stance changes. These legacy overrides are possible conflict points, not a confirmed diagnosis.
+This baseline matches movement response settings, not every behavior of the legacy movement PBO. Lean inputs remain available when sprint starts. Stamina, weapon sway, weapon lifting, item stance rules, movement-change callbacks, sprint-end cleanup and stance callbacks remain native. The built-in legacy camera policy selects raised stance cameras directly during transitions and restores sprint-camera selection from the movement index. It uses native camera FOV values and your FOV setting; it does not set a fixed FOV angle or force zoom input. Exact equivalence to a third-party FOV mod and held-zoom persistence are not established. In particular, it does not abort weapon events or refresh weapon animations during stance changes. These legacy overrides are possible conflict points, not a confirmed diagnosis.
 
 ## Install and test
 
@@ -17,3 +17,5 @@ Package checks verify PBO checksum, decompression and source round-trip. DayZ sc
 Source: GRZ_Movement/scripts/4_World/GRZMovement.c. Rebuild with `python tools/build_grz_movement.py` from the repository root.
 
 See PROVENANCE.md for package contents and rights limitations. No guarantee against copyright claims is made.
+
+Version 0.3 adds only GRZRunningLean.c to the runtime payload. It skips the native sprint-start lean-input locks. Movement tuning and camera code are byte-identical to version 0.2. Test left/right lean while jogging and sprinting, hold lean while entering/leaving sprint, release lean to check return to center, and repeat the LUGU sequence. In-game validation is required.
