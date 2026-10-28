@@ -7,3 +7,5 @@ Development used the supplied movement settings as a behavior reference, inspect
 The LUGU addon remains a separate optional installation. Permission to use it does not necessarily include permission to redistribute it. Obtain permission before bundling any third-party addon or using another creator's artwork or branding. No trademark search for GRZ Movement has been performed. DayZ and third-party platform license terms still apply.
 
 Distribute the standalone GRZ ZIP, not an archive of the historical HK-DROP-FIX repository: that repository contains third-party inputs and earlier experimental packages which are outside this GRZ release.
+
+Version 0.20 camera settings use a newly written normalized-coordinate layout with native DayZ widgets/font references and newly written preference/menu code. GunRunnerZ supplied the visual feature reference only; its code, layout, artwork and branding are not included.

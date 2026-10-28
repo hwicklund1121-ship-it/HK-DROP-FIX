@@ -9,7 +9,7 @@ from repack_lugu_no_motorbike import compress_literals, decompress, read_pbo
 def main():
     repo = Path(__file__).resolve().parents[1]
     source = repo / 'GRZ_Movement'
-    files = sorted(p for p in source.rglob('*') if p.is_file() and p.suffix in ('.cpp', '.c'))
+    files = sorted(p for p in source.rglob('*') if p.is_file() and p.suffix in ('.cpp', '.c', '.layout'))
     header = b'\0' + struct.pack('<5I', 0x56657273, 0, 0, 0, 0) + b'prefix\0GRZ_Movement\0\0'
     payload = bytearray()
     for path in files:
@@ -25,7 +25,7 @@ def main():
     for (name, fields, packed), path in zip(entries, files):
         assert name.decode().replace('\\', '/') == path.relative_to(source).as_posix()
         assert decompress(packed, fields[1]) == path.read_bytes()
-    target = repo / 'downloads/GRZ-Movement-v0.19-TEST.zip'
+    target = repo / 'downloads/GRZ-Movement-v0.20-TEST.zip'
     with zipfile.ZipFile(target, 'w', zipfile.ZIP_DEFLATED) as archive:
         archive.writestr('@GRZ_Movement/addons/GRZ_Movement.pbo', pbo)
         archive.write(source / 'README.md', 'README.md')
