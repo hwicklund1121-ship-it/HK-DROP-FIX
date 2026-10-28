@@ -25,7 +25,7 @@ def main():
     for (name, fields, packed), path in zip(entries, files):
         assert name.decode().replace('\\', '/') == path.relative_to(source).as_posix()
         assert decompress(packed, fields[1]) == path.read_bytes()
-    target = repo / 'downloads/GRZ-Movement-v0.8-TEST.zip'
+    target = repo / 'downloads/GRZ-Movement-v0.9-TEST.zip'
     with zipfile.ZipFile(target, 'w', zipfile.ZIP_DEFLATED) as archive:
         archive.writestr('@GRZ_Movement/addons/GRZ_Movement.pbo', pbo)
         archive.write(source / 'README.md', 'README.md')

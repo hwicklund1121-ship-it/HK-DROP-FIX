@@ -1,30 +1,30 @@
-// Retain full eye zoom during sprint when the player holds the zoom input.
-// The native handler uses SHALLOW zoom for sprint; other camera behavior stays
-// native, including FOV smoothing, distance, scopes and stance transitions.
+// Remove sprint's reduced eye-zoom level. Native zoom activation/release and
+// FOV smoothing remain in control; no extra raw-button check is needed.
 modded class DayZPlayerImplement
 {
     override int GetEyeZoomLevel()
     {
-        int nativeZoom = super.GetEyeZoomLevel();
-        if (nativeZoom != ECameraZoomType.SHALLOW)
-            return nativeZoom;
-        if (!IsAlive() || GetCurrentCommandID() != DayZPlayerConstants.COMMANDID_MOVE)
-            return nativeZoom;
-
+        int zoom = super.GetEyeZoomLevel();
+        if (zoom != ECameraZoomType.SHALLOW || !IsAlive())
+            return zoom;
+        if (GetCurrentCommandID() != DayZPlayerConstants.COMMANDID_MOVE)
+            return zoom;
         HumanInputController controls = GetInputController();
-        if (!controls || !controls.IsZoom() || controls.WeaponADS() || m_CameraOptics || m_CameraIronsight)
-            return nativeZoom;
-
+        if (!controls || controls.WeaponADS() || m_CameraOptics || m_CameraIronsight)
+            return zoom;
         HumanMovementState state = new HumanMovementState();
         GetMovementState(state);
-        if (state.m_iStanceIdx != DayZPlayerConstants.STANCEIDX_ERECT)
-            return nativeZoom;
-
-        float requestedSpeed;
-        vector requestedDirection;
-        controls.GetMovement(requestedSpeed, requestedDirection);
-        if (requestedSpeed >= 3)
+        if (state.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_ERECT)
             return ECameraZoomType.NORMAL;
-        return nativeZoom;
+        return zoom;
+    }
+}
+
+// Sprint must not move the camera farther away than the standing camera.
+modded class DayZPlayerCamera3rdPersonErcSpr
+{
+    void DayZPlayerCamera3rdPersonErcSpr(DayZPlayer pPlayer, HumanInputController pInput)
+    {
+        m_fDistance = 1.6;
     }
 }

@@ -1,43 +1,33 @@
 modded class DayZPlayerImplement
 {
-    private bool m_GRZWasProne;
-    private float m_GRZRecoveryStart = -1;
+    private float m_GRZProneDistance = -1;
 
-    float GRZMovementCameraDistance(float nativeDistance)
+    float GRZMovementCameraDistance(float nativeDistance, bool proneCamera)
     {
         HumanMovementState state = new HumanMovementState();
         GetMovementState(state);
         bool prone = state.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_PRONE || state.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_RAISEDPRONE;
         bool standing = state.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_ERECT || state.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_RAISEDERECT;
-        float now = GetGame().GetTime() * 0.001;
-        if (prone)
-        {
-            m_GRZWasProne = true;
-            m_GRZRecoveryStart = -1;
-            return nativeDistance;
-        }
-        if (m_GRZWasProne)
-        {
-            m_GRZWasProne = false;
-            if (standing && GetCurrentCommandID() == DayZPlayerConstants.COMMANDID_MOVE)
-                m_GRZRecoveryStart = now;
-        }
         if (GetCurrentCommandID() != DayZPlayerConstants.COMMANDID_MOVE)
         {
-            m_GRZRecoveryStart = -1;
+            m_GRZProneDistance = -1;
             return nativeDistance;
         }
-        HumanInputController controls = GetInputController();
-        if (controls && (controls.IsZoom() || controls.IsZoomToggle() || controls.WeaponADS()))
-            return nativeDistance;
-        if (standing && m_GRZRecoveryStart >= 0)
+        if (prone)
         {
-            float elapsed = now - m_GRZRecoveryStart;
-            // Extra room only after prone recovery: hold briefly, then fade.
-            if (elapsed < 1.2)
-                return nativeDistance + 0.4 * Math.Clamp((1.2 - elapsed) / 0.6, 0.0, 1.0);
-            m_GRZRecoveryStart = -1;
+            if (proneCamera)
+                m_GRZProneDistance = nativeDistance;
+            return nativeDistance;
         }
+        if (!standing)
+        {
+            m_GRZProneDistance = -1;
+            return nativeDistance;
+        }
+        // Keep the prone-distance floor throughout the standing recovery.
+        // Do not retain the prone pivot, which could place the camera in terrain.
+        if (!proneCamera && m_GRZProneDistance > 0)
+            return Math.Max(nativeDistance, m_GRZProneDistance);
         return nativeDistance;
     }
 }
@@ -54,11 +44,11 @@ modded class DayZPlayerCamera3rdPerson
         // Observe prone for the recovery transition, without changing its result.
         if (camera == "DayZPlayerCamera3rdPersonProne" || camera == "DayZPlayerCamera3rdPersonProneRaised")
         {
-            player.GRZMovementCameraDistance(pOutResult.m_fDistance);
+            player.GRZMovementCameraDistance(pOutResult.m_fDistance, true);
             return;
         }
-        if (camera != "DayZPlayerCamera3rdPersonErc" && camera != "DayZPlayerCamera3rdPersonErcRaised" && camera != "DayZPlayerCamera3rdPersonErcRaisedMelee" && camera != "DayZPlayerCamera3rdPersonCrouch" && camera != "DayZPlayerCamera3rdPersonCrouchRaised")
+        if (camera != "DayZPlayerCamera3rdPersonErcSpr" && camera != "DayZPlayerCamera3rdPersonErc" && camera != "DayZPlayerCamera3rdPersonErcRaised" && camera != "DayZPlayerCamera3rdPersonErcRaisedMelee" && camera != "DayZPlayerCamera3rdPersonCrouch" && camera != "DayZPlayerCamera3rdPersonCrouchRaised")
             return;
-        pOutResult.m_fDistance = player.GRZMovementCameraDistance(pOutResult.m_fDistance);
+        pOutResult.m_fDistance = player.GRZMovementCameraDistance(pOutResult.m_fDistance, true);
     }
 }
