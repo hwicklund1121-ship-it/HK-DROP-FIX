@@ -1,4 +1,4 @@
-// Mild crouched movement reduction. A one-frame input override expires without
+// Tiny crouched movement increase over the original input. A one-frame input override expires without
 // locking stance, slowing animation playback, or affecting standing/prone.
 modded class PlayerBase
 {
@@ -21,7 +21,7 @@ modded class PlayerBase
         vector direction;
         controls.GetMovement(speed, direction);
         if (speed > 0)
-            controls.OverrideMovementSpeed(HumanInputControllerOverrideType.ONE_FRAME, speed * 0.95);
+            controls.OverrideMovementSpeed(HumanInputControllerOverrideType.ONE_FRAME, Math.Min(speed * 1.01, 3.0));
         return handled;
     }
 }

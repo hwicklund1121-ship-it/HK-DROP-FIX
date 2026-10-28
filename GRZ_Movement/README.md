@@ -1,4 +1,4 @@
-# GRZ Movement 0.17 — slightly slower crouched movement
+# GRZ Movement 0.18 — tiny crouched speed increase
 
 Fresh movement-response implementation for DayZ 1.30. Uses 0.06 sprint smoothing, 100 acceleration limit, 0.14 strafe smoothing, a 17-degree turn threshold, 6.5 lean speed and unrestricted water movement speed. Initializes through the native implementation first. No animation assets from LUGU are included or changed.
 
@@ -47,3 +47,5 @@ Version 0.15 changes only GRZMovement.c runtime tuning: sprint response span 0.0
 Version 0.16 organizes the v0.15 movement settings into named preset constants and separate response, turning and water-configuration functions. This is a readability/maintenance refactor, not a new provenance claim or a copyright workaround. All parameter assignments retain their v0.15 values; other runtime resources are unchanged. DayZ API/class names necessarily remain as required by the engine. The development references described in PROVENANCE.md still apply. Runtime compilation must be verified in DayZ.
 
 Version 0.17 adds GRZCrouchSpeed.c, scaling requested movement speed to 95% only while settled in crouch or raised crouch. Uses ONE_FRAME override and preserves the inherited command-handler result. Skips stance transitions, roll, on-back recovery, fighting and non-movement commands. Standing, prone, animation playback and camera code are unchanged. The 95% input scaling is not a measured 5% world-speed reduction; engine animation blending may differ. Test crouched walk/run with and without a weapon, standing/prone speed, transition responsiveness, multiplayer movement and LUGU recovery. Runtime compilation and actual speed require in-game validation.
+
+Version 0.18 replaces the v0.17 crouch slowdown with 101% of original requested crouched movement input, capped at the engine maximum input of 3. This is 1% above the original input, not above v0.17. At already maximum input the cap prevents an increase. Engine animation blending means actual world-speed change is not guaranteed to equal 1%. All other runtime files are unchanged. Test crouched walk/run and drop recovery in-game.
