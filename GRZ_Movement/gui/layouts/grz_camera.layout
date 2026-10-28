@@ -16,7 +16,7 @@ ImageWidgetClass GRZRowsBackground
  vexactpos 0
  hexactsize 0
  vexactsize 0
- color 0 0 0 0.65
+ color 0 0 0 0.35
  blend 1
  ignorepointer 1
  image0 "#(argb,8,8,3)color(1,1,1,1,co)"
@@ -30,8 +30,6 @@ PanelWidgetClass GRZHeading
  vexactpos 0
  hexactsize 0
  vexactsize 0
- style Colorable
- color 0 0 0 1
  {
 ImageWidgetClass GRZHeadingBackground
 {
@@ -41,7 +39,7 @@ ImageWidgetClass GRZHeadingBackground
  vexactpos 0
  hexactsize 0
  vexactsize 0
- color 0 0 0 0.85
+ color 0 0 0 1
  blend 1
  ignorepointer 1
  image0 "#(argb,8,8,3)color(1,1,1,1,co)"
@@ -57,7 +55,7 @@ TextWidgetClass GRZSectionTitle
  vexactsize 0
  text "GunRunnerZ FOV"
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.65
+ text_proportion 0.75
  ignorepointer 1
 }
  }
@@ -70,8 +68,6 @@ PanelWidgetClass GRZFovRow
  vexactpos 0
  hexactsize 0
  vexactsize 0
- style Colorable
- color 0 0 0 0.55
  {
 PanelWidgetClass GRZFovBorder
 {
@@ -107,7 +103,7 @@ TextWidgetClass GRZFovLabel
  vexactsize 0
  text "FIELD OF VIEW"
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.65
+ text_proportion 0.75
  ignorepointer 1
 }
 SliderWidgetClass GRZFov
@@ -120,6 +116,20 @@ SliderWidgetClass GRZFov
  vexactsize 0
  color 1 1 1 1
  {
+ImageWidgetClass GRZFovFill
+{
+ position 0.012 0.12
+ size 0 0.76
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 1 1 1 0.60
+ blend 1
+ ignorepointer 1
+ image0 "#(argb,8,8,3)color(1,1,1,1,co)"
+ mode blend
+}
 PanelWidgetClass GRZFovMarker
 {
  position 0 0.1
@@ -143,7 +153,7 @@ TextWidgetClass GRZFovValue
  hexactsize 0
  vexactsize 0
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.65
+ text_proportion 0.75
  ignorepointer 1
 }
  }
@@ -156,8 +166,6 @@ PanelWidgetClass GRZViewRow
  vexactpos 0
  hexactsize 0
  vexactsize 0
- style Colorable
- color 0 0 0 0.55
  {
 PanelWidgetClass GRZViewBorder
 {
@@ -193,7 +201,7 @@ TextWidgetClass GRZViewLabel
  vexactsize 0
  text "VIEW DISTANCE"
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.65
+ text_proportion 0.75
  ignorepointer 1
 }
 SliderWidgetClass GRZView
@@ -206,6 +214,20 @@ SliderWidgetClass GRZView
  vexactsize 0
  color 1 1 1 1
  {
+ImageWidgetClass GRZViewFill
+{
+ position 0.012 0.12
+ size 0 0.76
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 1 1 1 0.60
+ blend 1
+ ignorepointer 1
+ image0 "#(argb,8,8,3)color(1,1,1,1,co)"
+ mode blend
+}
 PanelWidgetClass GRZViewMarker
 {
  position 0 0.1
@@ -229,7 +251,7 @@ TextWidgetClass GRZViewValue
  hexactsize 0
  vexactsize 0
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.65
+ text_proportion 0.75
  ignorepointer 1
 }
  }
@@ -242,8 +264,6 @@ PanelWidgetClass GRZObjectsRow
  vexactpos 0
  hexactsize 0
  vexactsize 0
- style Colorable
- color 0 0 0 0.55
  {
 PanelWidgetClass GRZObjectsBorder
 {
@@ -279,7 +299,7 @@ TextWidgetClass GRZObjectsLabel
  vexactsize 0
  text "OBJECT VIEW DISTANCE"
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.65
+ text_proportion 0.75
  ignorepointer 1
 }
 SliderWidgetClass GRZObjects
@@ -292,6 +312,20 @@ SliderWidgetClass GRZObjects
  vexactsize 0
  color 1 1 1 1
  {
+ImageWidgetClass GRZObjectsFill
+{
+ position 0.012 0.12
+ size 0 0.76
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ color 1 1 1 0.60
+ blend 1
+ ignorepointer 1
+ image0 "#(argb,8,8,3)color(1,1,1,1,co)"
+ mode blend
+}
 PanelWidgetClass GRZObjectsMarker
 {
  position 0 0.1
@@ -315,7 +349,7 @@ TextWidgetClass GRZObjectsValue
  hexactsize 0
  vexactsize 0
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.65
+ text_proportion 0.75
  ignorepointer 1
 }
  }
@@ -329,7 +363,7 @@ TextWidgetClass GRZStatus
  hexactsize 0
  vexactsize 0
  font "gui/fonts/sdf_MetronBook24"
- text_proportion 0.65
+ text_proportion 0.75
  ignorepointer 1
 }
  }

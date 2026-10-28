@@ -1,4 +1,4 @@
-# GRZ Movement 0.23 — translucent black settings background
+# GRZ Movement 0.24 — native-style rows and slider fill
 
 
 Open **Settings > Game**, then look for the **GunRunnerZ FOV** section replacing the original **Camera** category. The sliders are inside the normal Settings screen; there is no F7 menu. Use the normal Settings **Apply**, **Reset**, **Defaults**, and **Back** controls. Values are not previewed before Apply; leaving without applying discards edits.
@@ -72,3 +72,5 @@ Version 0.21 labels the enhanced slider GunRunnerZ FOV, adds a separate GunRunne
 Version 0.22 addresses screenshot overlap by finding the complete native Camera category below the game-settings stack, hiding its original heading/row and fitting the GRZ panel into that host. Uses an opaque black heading, translucent black setting rows and fixed-size white text. White slider markers remain. The category host name is logged for troubleshooting. Placement/sizing must be confirmed in-game; if the category is not identifiable the original UI is retained. All rendering preferences and World scripts are unchanged.
 
 Version 0.23 adds explicit drawable ImageWidget backgrounds: 65% black behind the three slider rows and 85% black behind the heading. Uses a procedural solid-white engine texture tinted black, not external artwork. Backgrounds ignore pointer input and sit behind labels/sliders. Script resources, layout positions and slider behavior are unchanged. The previous PanelWidget color alone did not render the requested backing in the supplied screenshot. Appearance requires an in-game check.
+
+Version 0.24 lightens the single translucent row backing to 35% black and removes redundant container shading/borders. Uses a plain opaque-black heading, larger heading/row text and white slider fill that tracks the normalized value between min/max. Fill and marker update together on loading, dragging, reset and defaults; both ignore pointer input. Value labels get a thin black outline for readability over fill. Range, persistence, movement and camera scripts are unchanged. Visual match and UI interaction still need in-game verification.

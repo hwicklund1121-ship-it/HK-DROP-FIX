@@ -6,6 +6,9 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
     private float m_SavedFov;
     private float m_SavedView;
     private float m_SavedObjects;
+    private Widget m_FovFill;
+    private Widget m_ViewFill;
+    private Widget m_ObjectsFill;
     private Widget m_FovMarker;
     private Widget m_ViewMarker;
     private Widget m_ObjectsMarker;
@@ -27,6 +30,15 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
         m_ViewValue = TextWidget.Cast(m_Root.FindAnyWidget("GRZViewValue"));
         m_ObjectsValue = TextWidget.Cast(m_Root.FindAnyWidget("GRZObjectsValue"));
         m_Status = TextWidget.Cast(m_Root.FindAnyWidget("GRZStatus"));
+        m_FovFill = m_Root.FindAnyWidget("GRZFovFill");
+        m_ViewFill = m_Root.FindAnyWidget("GRZViewFill");
+        m_ObjectsFill = m_Root.FindAnyWidget("GRZObjectsFill");
+        m_FovFill.SetFlags(WidgetFlags.IGNOREPOINTER);
+        m_ViewFill.SetFlags(WidgetFlags.IGNOREPOINTER);
+        m_ObjectsFill.SetFlags(WidgetFlags.IGNOREPOINTER);
+        m_FovValue.SetOutline(1, ARGB(255, 0, 0, 0));
+        m_ViewValue.SetOutline(1, ARGB(255, 0, 0, 0));
+        m_ObjectsValue.SetOutline(1, ARGB(255, 0, 0, 0));
         m_FovMarker = m_Root.FindAnyWidget("GRZFovMarker");
         m_ViewMarker = m_Root.FindAnyWidget("GRZViewMarker");
         m_ObjectsMarker = m_Root.FindAnyWidget("GRZObjectsMarker");
@@ -46,7 +58,7 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
         RefreshValues();
         TextWidget heading = TextWidget.Cast(m_Root.FindAnyWidget("GRZSectionTitle"));
         heading.SetFlags(WidgetFlags.CENTER | WidgetFlags.VCENTER);
-        heading.SetTextProportion(0.8);
+        heading.SetTextProportion(1.0);
         m_Root.SetHandler(this);
         m_Menu = menu;
         CaptureSavedValues();
@@ -57,18 +69,20 @@ class GRZCameraSettingsPanel extends ScriptedWidgetEventHandler
         // Objects cannot render farther than the overall view distance.
         if (m_Objects.GetCurrent() > m_View.GetCurrent())
             m_Objects.SetCurrent(m_View.GetCurrent());
-        UpdateMarker(m_Fov, m_FovMarker);
-        UpdateMarker(m_View, m_ViewMarker);
-        UpdateMarker(m_Objects, m_ObjectsMarker);
+        UpdateMarker(m_Fov, m_FovMarker, m_FovFill);
+        UpdateMarker(m_View, m_ViewMarker, m_ViewFill);
+        UpdateMarker(m_Objects, m_ObjectsMarker, m_ObjectsFill);
         m_FovValue.SetText(m_Fov.GetCurrent().ToString());
         m_ViewValue.SetText(Math.Round(m_View.GetCurrent()).ToString() + " m");
         m_ObjectsValue.SetText(Math.Round(m_Objects.GetCurrent()).ToString() + " m");
     }
 
-    private void UpdateMarker(SliderWidget slider, Widget marker)
+    private void UpdateMarker(SliderWidget slider, Widget marker, Widget fill)
     {
         float fraction = (slider.GetCurrent() - slider.GetMin()) / (slider.GetMax() - slider.GetMin());
-        marker.SetPos(Math.Clamp(fraction, 0, 1) * 0.988, 0.10);
+        fraction = Math.Clamp(fraction, 0, 1);
+        marker.SetPos(fraction * 0.988, 0.10);
+        fill.SetSize(fraction * 0.976, 0.76);
     }
 
     void SetSectionOrder(int order)
