@@ -1,0 +1,8 @@
+{
+  "exception_code": "0xc0000005",
+  "instruction_address": "0x7ff794310eb9",
+  "access_operation": 0,
+  "attempted_address": "0x38",
+  "module": "DayZServer_x64.exe",
+  "module_relative_offset": "0xa30eb9"
+}
