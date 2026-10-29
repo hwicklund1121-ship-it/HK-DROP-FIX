@@ -16,9 +16,19 @@ class CfgMods
         name = "GRZ Movement";
         author = "GRZ";
         type = "mod";
-        dependencies[] = {"World"};
+        dependencies[] = {"Game", "World", "Mission"};
         class defs
         {
+            class gameScriptModule
+            {
+                value = "";
+                files[] = {"GRZ_Movement/scripts/3_Game"};
+            };
+            class missionScriptModule
+            {
+                value = "";
+                files[] = {"GRZ_Movement/scripts/5_Mission"};
+            };
             class worldScriptModule
             {
                 value = "";

@@ -1,3 +1,17 @@
+# GRZ live FOV preview and eye-zoom test
+
+Restores the GRZ FOV/render-distance settings panel. Dragging the FOV slider previews the new FOV immediately without saving it. Apply persists preferences; Revert/Cancel or closing discards the temporary FOV preview and returns to the last applied FOV. Defaults previews the default FOV until applied or discarded. Saving failures leave the preview unsaved and show an error.
+
+Adds a client-only eye-zoom getter using native IsZoomToggle input for lowered standing/crouching movement, including sprint. ADS, raised weapons, prone and special movement commands retain inherited behavior. No eye-zoom latch or forced camera position is used.
+
+Movement and original sprint lean remain byte-identical to the no-camera test. Camera-distance/recovery code, legacy camera selection, transform/pivot/shoulder changes, bob corrections, FOV activation carry-over and camera trace remain removed. Restoring FOV/eye-zoom intentionally ends the completely native-camera isolation test.
+
+Back up the prior PBO outside loaded addons. Replace GRZ_Movement.pbo on both test server and clients, sign through your usual workflow where needed, and restart both. Test slider drag/Apply/Cancel/Defaults/reopen/rejoin, hold and toggle eye zoom across standing/sprint/crouch transitions, release zoom, ADS, prone and movement near static objects. Use a connected gameplay session to see live FOV changes; visibility through the settings menu depends on the game's menu background.
+
+Validation covers packaging, client/SERVER preprocessing and source checks, not Enforce compilation or in-game behavior. Eye zoom reliability and preview UI require testing on your DayZ 1.30 server/client.
+
+Previous test history follows and does not describe the current feature set.
+
 # GRZ native-camera isolation test
 
 All GRZ camera scripts, eye-zoom changes, camera diagnostics, FOV preferences/menu and custom layout are removed in this build. Only World scripts are registered. Camera selection, zoom, FOV, camera distance, sprint roll and crouch camera bob use inherited behavior. No HK-drop camera recovery code or animation assets are included. Other separately installed camera mods are not removed by replacing GRZ.
