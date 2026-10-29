@@ -1,3 +1,15 @@
+# GRZ native-camera isolation test
+
+All GRZ camera scripts, eye-zoom changes, camera diagnostics, FOV preferences/menu and custom layout are removed in this build. Only World scripts are registered. Camera selection, zoom, FOV, camera distance, sprint roll and crouch camera bob use inherited behavior. No HK-drop camera recovery code or animation assets are included. Other separately installed camera mods are not removed by replacing GRZ.
+
+Movement and original running lean are byte-identical to GRZ-Original-Sprint-Lean-No-Camera-Distance-Test. Movement response remains 0.06 / 100 / 0.14 / 17 / 6.5. Native weapon obstruction remains enabled.
+
+Back up the previous PBO outside loaded addons. Replace GRZ_Movement.pbo on both client and test server, remove duplicate GRZ builds, use your normal signing process if required, and restart both. Test backward movement and stops beside the same static object, then compare open ground. Camera bob, sprint zoom and FOV may look different because GRZ no longer changes them. The GRZ FOV settings menu is absent. Previously stored preference files are not deleted or applied by this build.
+
+Verified: package checksum, source round-trips, client/SERVER preprocessing and exact retention of movement/lean sources. In-game behavior and Enforce compilation remain unverified. This is an isolation test, not a confirmed rubber-banding fix.
+
+Earlier release history is retained below for reference and does not describe this build.
+
 ## Current test: native camera distance, no HK-drop recovery
 
 This build removes GRZCameraDistance.c, including prone-distance tracking and the standing recovery distance floor. It also removes the sprint camera distance constructor and eye-zoom-dependent sprint pivot/shoulder overrides. Camera boom distance and sprint framing now use inherited behavior. No HK/LUGU PBOs or animation assets are included. Separate HK shoulder, recovery or LUGU addons already installed are not removed by replacing GRZ; manage those separately.
