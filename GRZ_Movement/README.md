@@ -2,7 +2,7 @@
 
 This build removes GRZCameraDistance.c, including prone-distance tracking and the standing recovery distance floor. It also removes the sprint camera distance constructor and eye-zoom-dependent sprint pivot/shoulder overrides. Camera boom distance and sprint framing now use inherited behavior. No HK/LUGU PBOs or animation assets are included. Separate HK shoulder, recovery or LUGU addons already installed are not removed by replacing GRZ; manage those separately.
 
-Original movement preset and the latest sprint-lean handling remain unchanged. Native weapon-obstruction handling remains enabled from the preceding test. Eye-zoom level correction, FOV continuity, legacy camera selection, bob corrections, camera preferences and render-distance settings remain. Historical notes below describe earlier builds and may no longer apply.
+Original movement preset remains unchanged. The sprint-start experiment has been reverted: running lean uses the original empty OnSprintStart override, without the added super call or explicit input unlocks. Native weapon-obstruction handling remains enabled from the preceding test. Eye-zoom level correction, FOV continuity, legacy camera selection, bob corrections, camera preferences and render-distance settings remain. Historical notes below describe earlier builds and may no longer apply.
 
 Replace the same-name GRZ PBO on both test server and clients, back up the previous version outside loaded addon directories, remove duplicate GRZ builds, sign using your usual process where required, and restart both. Test near the same objects, standing/crouching/sprinting, first/third person, ADS, eye zoom and prone-to-stand recovery. This build is not an in-game-verified jitter fix.
 
